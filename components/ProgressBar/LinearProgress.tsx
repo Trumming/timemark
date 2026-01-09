@@ -20,7 +20,7 @@ export const LinearProgress = memo(function LinearProgress({
   className
 }: LinearProgressProps) {
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full max-w-2xl mx-auto', className)}>
       <div
         className="h-8 rounded-full overflow-hidden relative"
         style={{ backgroundColor }}

@@ -1,51 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    /* Dawn-inspired palette - soft, calming colors */
+    --background: 255 100% 98%; /* Warm cream */
+    --foreground: 220 30% 20%; /* Soft charcoal */
+
+    --card: 255 100% 99%; /* Nearly white */
+    --card-foreground: 220 30% 20%;
+
+    --primary: 175 45% 65%; /* Soft sage green */
+    --primary-foreground: 180 40% 15%;
+
+    --secondary: 340 65% 75%; /* Gentle coral */
+    --secondary-foreground: 340 50% 20%;
+
+    --accent: 255 70% 85%; /* Soft lavender */
+    --accent-foreground: 255 40% 25%;
+
+    --muted: 210 30% 92%;
+    --muted-foreground: 220 20% 45%;
+
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 175 45% 65%;
+
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background: 220 40% 8%; /* Deep blue-gray */
+    --foreground: 210 30% 92%;
+
+    --card: 220 35% 12%;
+    --card-foreground: 210 30% 92%;
+
+    --primary: 175 50% 55%; /* Muted sage */
+    --primary-foreground: 180 30% 95%;
+
+    --secondary: 340 50% 60%; /* Muted coral */
+    --secondary-foreground: 340 30% 95%;
+
+    --accent: 255 50% 65%; /* Soft lavender */
+    --accent-foreground: 255 30% 95%;
+
+    --muted: 220 30% 18%;
+    --muted-foreground: 210 20% 65%;
+
+    --border: 220 25% 20%;
+    --input: 220 25% 20%;
+    --ring: 175 50% 55%;
   }
 }
 
@@ -53,7 +61,210 @@
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: 'Outfit', -apple-system, system-ui, sans-serif;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Display font for headings */
+  h1, h2, h3, .display-font {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Gentle glass effect */
+  .glass-gentle {
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10;
+    box-shadow:
+      0 4px 24px -1px rgb(0 0 0 / 0.04),
+      0 2px 8px -2px rgb(0 0 0 / 0.02),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.4);
+  }
+
+  .dark .glass-gentle {
+    box-shadow:
+      0 4px 24px -1px rgb(0 0 0 / 0.3),
+      0 2px 8px -2px rgb(0 0 0 / 0.2),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+  }
+
+  /* Subtle gradient text */
+  .gradient-dawn {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--accent)) 100%
+    );
+  }
+
+  /* Breathing animation for progress */
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 0.95;
+    }
+  }
+
+  .animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  /* Gentle fade in */
+  @keyframes fade-gentle {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-gentle {
+    animation: fade-gentle 0.6s ease-out forwards;
+  }
+
+  /* Staggered children animation */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fade-gentle 0.6s ease-out forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 400ms; }
+
+  /* Soft ambient background */
+  .ambient-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 20% 30%, hsl(175 45% 65% / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, hsl(340 65% 75% / 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, hsl(255 70% 85% / 0.04) 0%, transparent 50%);
+  }
+
+  .dark .ambient-glow {
+    background:
+      radial-gradient(ellipse at 20% 30%, hsl(175 50% 55% / 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, hsl(340 50% 60% / 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, hsl(255 50% 65% / 0.02) 0%, transparent 50%);
+  }
+
+  /* Soft button styles */
+  .btn-soft {
+    @apply px-6 py-2.5 rounded-full font-medium transition-all duration-300;
+    @apply hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+    @apply disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-soft-primary {
+    @apply btn-soft;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    @apply text-white shadow-md;
+  }
+
+  .btn-soft-secondary {
+    @apply btn-soft;
+    @apply bg-secondary/10 text-secondary-foreground hover:bg-secondary/20;
+  }
+
+  /* Language switcher */
+  .lang-switcher {
+    @apply flex items-center gap-1.5 px-3 py-1.5 rounded-full;
+    @apply bg-white/50 dark:bg-black/30 backdrop-blur-sm;
+    @apply border border-black/5 dark:border-white/10;
+    @apply text-sm font-medium text-muted-foreground;
+    @apply hover:bg-black/5 dark:hover:bg-white/5;
+    @apply transition-all duration-200;
+  }
+
+  .lang-switcher button {
+    @apply px-2 py-0.5 rounded-md;
+    @apply hover:bg-black/5 dark:hover:bg-white/5;
+    @apply transition-all duration-200;
+  }
+
+  .lang-switcher button.active {
+    @apply bg-primary/20 text-primary;
+    @apply font-semibold;
+  }
+
+  /* Progress card special styling */
+  .progress-card {
+    @apply glass-gentle rounded-3xl p-8 md:p-12;
+    @apply transition-all duration-500;
+    @apply hover:shadow-2xl;
+  }
+
+  /* Settings panels */
+  .settings-panel {
+    @apply glass-gentle rounded-2xl overflow-hidden;
+    @apply transition-all duration-300;
+  }
+
+  .settings-panel:hover {
+    @apply shadow-lg;
+  }
+
+  /* Input styling */
+  input[type="date"],
+  input[type="color"],
+  select {
+    @apply w-full px-4 py-2.5 rounded-xl;
+    @apply bg-white/50 dark:bg-black/30;
+    @apply border border-black/10 dark:border-white/10;
+    @apply text-foreground;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/30;
+    @apply transition-all duration-200;
+  }
+
+  /* Toggle switch */
+  .toggle-switch {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full;
+    @apply bg-muted transition-colors duration-300;
+    @apply cursor-pointer;
+  }
+
+  .toggle-switch.active {
+    @apply bg-primary;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    @apply absolute h-5 w-5 rounded-full bg-white shadow-md;
+    @apply transition-transform duration-300;
+    @apply left-0.5;
+  }
+
+  .toggle-switch.active::after {
+    @apply translate-x-5;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }

@@ -1,35 +1,32 @@
 'use client'
 
-import { Language } from '@/lib/i18n'
+import { Locale } from '@/lib/i18n'
 
 interface LanguageSwitcherProps {
-  currentLang: Language
-  onLanguageChange: (lang: Language) => void
+  currentLocale: Locale
+  onLocaleChange: (locale: Locale) => void
 }
 
-export function LanguageSwitcher({ currentLang, onLanguageChange }: LanguageSwitcherProps) {
+const languages: { code: Locale; label: string; native: string }[] = [
+  { code: 'zh', label: '中文', native: '中文' },
+  { code: 'en', label: 'EN', native: 'English' },
+  { code: 'ja', label: '日本語', native: '日本語' },
+]
+
+export function LanguageSwitcher({ currentLocale, onLocaleChange }: LanguageSwitcherProps) {
   return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => onLanguageChange('zh')}
-        className={`px-3 py-1 rounded text-sm transition-colors ${
-          currentLang === 'zh'
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-        }`}
-      >
-        中文
-      </button>
-      <button
-        onClick={() => onLanguageChange('en')}
-        className={`px-3 py-1 rounded text-sm transition-colors ${
-          currentLang === 'en'
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-        }`}
-      >
-        EN
-      </button>
+    <div className="lang-switcher">
+      {languages.map((lang) => (
+        <button
+          key={lang.code}
+          onClick={() => onLocaleChange(lang.code)}
+          className={currentLocale === lang.code ? 'active' : ''}
+          title={lang.native}
+          aria-label={`Switch to ${lang.native}`}
+        >
+          {lang.label}
+        </button>
+      ))}
     </div>
   )
 }

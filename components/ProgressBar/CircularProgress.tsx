@@ -28,11 +28,12 @@ export const CircularProgress = memo(function CircularProgress({
   const offset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className={cn('relative', className)} style={{ width: size, height: size }}>
+    <div className={cn('relative mx-auto', className)} style={{ width: size, height: size }}>
       <svg
         width={size}
         height={size}
         className="transform -rotate-90"
+        style={{ transform: 'rotate(90deg) scaleX(-1)' }}
       >
         {/* 背景圆环 */}
         <circle

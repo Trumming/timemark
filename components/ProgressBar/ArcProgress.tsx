@@ -19,8 +19,8 @@ export const ArcProgress = memo(function ArcProgress({
   primaryColor,
   backgroundColor,
   showPercentage,
-  size = 400,
-  strokeWidth = 25,
+  size = 300,
+  strokeWidth = 20,
   className
 }: ArcProgressProps) {
   const arcData = useMemo(() => {
@@ -70,10 +70,10 @@ export const ArcProgress = memo(function ArcProgress({
   }, [size, strokeWidth, percentage])
 
   return (
-    <div className={cn('relative', className)} style={{ width: size, height: size * 0.7 }}>
+    <div className={cn('relative flex flex-col items-center justify-center mx-auto', className)} style={{ width: size, height: size }}>
       <svg
         width={size}
-        height={size * 0.7}
+        height={size}
         className="overflow-visible"
       >
         {/* 背景弧 */}
@@ -99,8 +99,8 @@ export const ArcProgress = memo(function ArcProgress({
         />
       </svg>
 
-      {/* 下方内容 */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      {/* 中心内容 - 与圆形相同位置 */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ marginTop: size * 0.15 }}>
         {showPercentage && (
           <motion.div
             className="text-center"
@@ -108,7 +108,7 @@ export const ArcProgress = memo(function ArcProgress({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <div className="text-6xl font-bold" style={{ color: primaryColor }}>
+            <div className="text-5xl font-bold" style={{ color: primaryColor }}>
               {percentage.toFixed(1)}%
             </div>
           </motion.div>

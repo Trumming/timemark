@@ -1,174 +1,351 @@
-export type Language = 'zh' | 'en'
+export type Locale = 'zh' | 'en' | 'ja'
 
-export const translations = {
+export interface Translations {
+  // Header
+  appName: string
+  appTagline: string
+  toggleTheme: string
+
+  // Progress Types
+  progressTypes: {
+    year: string
+    month: string
+    week: string
+    lifetime: string
+  }
+
+  // Shapes
+  shapes: {
+    linear: string
+    circular: string
+    arc: string
+  }
+
+  // Messages
+  messages: {
+    beginning: string
+    earlyStage: string
+    goodStart: string
+    quarterWay: string
+    halfWay: string
+    threeQuarter: string
+    finalStretch: string
+    almostThere: string
+    complete: string
+    setBirthdate: string
+  }
+
+  // Settings
+  settings: {
+    title: string
+    description: string
+    progressType: string
+    shape: string
+    colorTheme: string
+    primaryColor: string
+    backgroundColor: string
+    showPercentage: string
+    showDaysRemaining: string
+    birthdate: string
+  }
+
+  // Panels
+  panels: {
+    settings: string
+    notifications: string
+    share: string
+    history: string
+  }
+
+  // Days
+  daysPassed: string
+  daysRemaining: string
+  day: string
+
+  // Milestones
+  milestoneStart: string
+  milestone10: string
+  milestone25: string
+  milestone50: string
+  milestone75: string
+  milestone90: string
+  milestone99: string
+  milestone100: string
+
+  // Footer
+  privacyNote: string
+  builtWith: string
+
+  // Common
+  close: string
+  save: string
+  cancel: string
+  test: string
+}
+
+export const translations: Record<Locale, Translations> = {
   zh: {
-    // 页面标题
-    title: '年度进度条',
-    subtitle: '可视化时间进度，珍惜每一刻',
+    appName: '时光印记',
+    appTagline: '温柔记录时光流转',
+    toggleTheme: '切换主题',
 
-    // 进度类型
-    type_year: '年度进度',
-    type_month: '月度进度',
-    type_week: '周进度',
-    type_lifetime: '人生进度',
+    progressTypes: {
+      year: '年度',
+      month: '本月',
+      week: '本周',
+      lifetime: '人生',
+    },
 
-    // 形状
-    shape_linear: '线性',
-    shape_circular: '圆形',
-    shape_arc: '弧形',
+    shapes: {
+      linear: '线性',
+      circular: '圆形',
+      arc: '弧形',
+    },
 
-    // 设置面板
-    settings_title: '自定义选项',
-    settings_description: '个性化你的进度条',
-    progress_type: '进度类型',
-    progress_shape: '进度条形状',
-    color_theme: '颜色主题',
-    primary_color: '主色调',
-    background_color: '背景色',
-    show_percentage: '显示百分比',
-    show_days_remaining: '显示剩余天数',
-    birth_date: '出生日期',
-    show_settings: '显示设置',
-    hide_settings: '隐藏设置',
+    messages: {
+      beginning: '新的旅程，温柔开始',
+      earlyStage: '起步阶段，保持从容',
+      goodStart: '美好的开始，继续前行',
+      quarterWay: '四分之一已过，稳步前进',
+      halfWay: '时光过半，依然从容',
+      threeQuarter: '旅程丰富，继续探索',
+      finalStretch: '最后一段，享受此刻',
+      almostThere: '即将完成，珍惜当下',
+      complete: '周期圆满，新的开始',
+      setBirthdate: '请设置出生日期',
+    },
 
-    // 通知面板
-    notification_title: '通知提醒',
-    notification_description: '开启浏览器通知以接收提醒',
-    notification_enabled: '通知已启用，您可以管理提醒设置',
-    permission_granted: '通知权限已授予',
-    permission_denied: '通知权限被拒绝',
-    permission_default: '未请求通知权限',
-    enable_notifications: '启用通知',
-    enable_reminders: '启用提醒',
-    reminder_frequency: '提醒频率',
-    frequency_milestones: '里程碑提醒',
-    frequency_daily: '每日提醒',
-    frequency_weekly: '每周提醒',
-    test_notification: '发送测试通知',
+    settings: {
+      title: '个性化设置',
+      description: '调整您的时光记录',
+      progressType: '进度类型',
+      shape: '显示形状',
+      colorTheme: '颜色主题',
+      primaryColor: '主色调',
+      backgroundColor: '背景色',
+      showPercentage: '显示百分比',
+      showDaysRemaining: '显示天数',
+      birthdate: '出生日期',
+    },
 
-    // 分享面板
-    share_title: '分享与导出',
-    share_description: '分享进度或嵌入到你的网站',
-    share_to_social: '分享到社交媒体',
-    copy_share_text: '复制分享文本',
-    export_image: '导出为图片',
-    download_image: '下载进度条图片',
-    embed_website: '嵌入到网站',
-    embed_hint: '复制代码并粘贴到你的网站HTML中',
+    panels: {
+      settings: '设置',
+      notifications: '提醒',
+      share: '分享',
+      history: '历史',
+    },
 
-    // 历史面板
-    history_title: '历史数据与分析',
-    history_description: '查看你的进度历史和趋势',
-    record_count: '记录次数',
-    avg_progress: '平均进度',
-    view_type: '查看类型',
-    view_all: '全部',
-    record_current: '记录当前进度',
-    clear_history: '清空',
-    no_history: '暂无历史记录',
+    daysPassed: '已过',
+    daysRemaining: '剩余',
+    day: '天',
 
-    // 通用
-    days_passed: '已过',
-    days_remaining: '剩余',
-    days: '天',
-    privacy_note: '数据保存在本地浏览器，不会上传到服务器',
-    footer_note: '使用 Next.js + React + Tailwind CSS 构建',
+    milestoneStart: '🌱 旅程开启',
+    milestone10: '🌿 已达一成，继续从容',
+    milestone25: '🍃 四分之一，稳步前行',
+    milestone50: '🌳 时光过半，依然优雅',
+    milestone75: '🌾 四分之三，收获满满',
+    milestone90: '🌙 接近圆满，享受此刻',
+    milestone99: '✨ 即将完成，珍惜当下',
+    milestone100: '🎊 圆满完成，新的开始',
 
-    // 激励消息
-    msg_start: '刚刚开始，全新的一年！',
-    msg_early: '起步阶段，保持动力！',
-    msg_good_start: '良好的开始，继续前进！',
-    msg_quarter: '已过四分之一，稳步推进！',
-    msg_half: '上半年已过，年过半！',
-    msg_sprint: '冲刺阶段，最后冲刺！',
-    msg_almost: '即将完成，最后坚持！',
-    msg_complete: '已结束，感谢这一年！',
+    privacyNote: '数据保存在本地，保护您的隐私',
+    builtWith: '用心构建',
+
+    close: '关闭',
+    save: '保存',
+    cancel: '取消',
+    test: '测试',
   },
+
   en: {
-    // Page titles
-    title: 'Year Progress Bar',
-    subtitle: 'Visualize time progress, cherish every moment',
+    appName: 'Time Gentle',
+    appTagline: 'Gracefully tracking time\'s flow',
+    toggleTheme: 'Toggle Theme',
 
-    // Progress types
-    type_year: 'Year Progress',
-    type_month: 'Month Progress',
-    type_week: 'Week Progress',
-    type_lifetime: 'Lifetime Progress',
+    progressTypes: {
+      year: 'Yearly',
+      month: 'Monthly',
+      week: 'Weekly',
+      lifetime: 'Lifetime',
+    },
 
-    // Shapes
-    shape_linear: 'Linear',
-    shape_circular: 'Circular',
-    shape_arc: 'Arc',
+    shapes: {
+      linear: 'Linear',
+      circular: 'Circular',
+      arc: 'Arc',
+    },
 
-    // Settings panel
-    settings_title: 'Customize Options',
-    settings_description: 'Personalize your progress bar',
-    progress_type: 'Progress Type',
-    progress_shape: 'Progress Shape',
-    color_theme: 'Color Theme',
-    primary_color: 'Primary Color',
-    background_color: 'Background Color',
-    show_percentage: 'Show Percentage',
-    show_days_remaining: 'Show Days Remaining',
-    birth_date: 'Birth Date',
-    show_settings: 'Show Settings',
-    hide_settings: 'Hide Settings',
+    messages: {
+      beginning: 'A new journey begins gently',
+      earlyStage: 'Early stage, stay composed',
+      goodStart: 'Beautiful start, keep flowing',
+      quarterWay: 'Quarter passed, moving steadily',
+      halfWay: 'Halfway through, still graceful',
+      threeQuarter: 'Journey rich, keep exploring',
+      finalStretch: 'Final stretch, enjoy this moment',
+      almostThere: 'Almost there, cherish now',
+      complete: 'Cycle complete, new beginning',
+      setBirthdate: 'Please set your birthdate',
+    },
 
-    // Notification panel
-    notification_title: 'Notifications',
-    notification_description: 'Enable browser notifications to receive reminders',
-    notification_enabled: 'Notifications enabled, you can manage reminder settings',
-    permission_granted: 'Notification permission granted',
-    permission_denied: 'Notification permission denied',
-    permission_default: 'Notification permission not requested',
-    enable_notifications: 'Enable Notifications',
-    enable_reminders: 'Enable Reminders',
-    reminder_frequency: 'Reminder Frequency',
-    frequency_milestones: 'Milestone Reminders',
-    frequency_daily: 'Daily Reminders',
-    frequency_weekly: 'Weekly Reminders',
-    test_notification: 'Send Test Notification',
+    settings: {
+      title: 'Personalize',
+      description: 'Adjust your time tracking',
+      progressType: 'Progress Type',
+      shape: 'Display Shape',
+      colorTheme: 'Color Theme',
+      primaryColor: 'Primary Color',
+      backgroundColor: 'Background',
+      showPercentage: 'Show Percentage',
+      showDaysRemaining: 'Show Days',
+      birthdate: 'Birthdate',
+    },
 
-    // Share panel
-    share_title: 'Share & Export',
-    share_description: 'Share progress or embed to your website',
-    share_to_social: 'Share to Social Media',
-    copy_share_text: 'Copy Share Text',
-    export_image: 'Export as Image',
-    download_image: 'Download Progress Image',
-    embed_website: 'Embed to Website',
-    embed_hint: 'Copy code and paste to your website HTML',
+    panels: {
+      settings: 'Settings',
+      notifications: 'Notifications',
+      share: 'Share',
+      history: 'History',
+    },
 
-    // History panel
-    history_title: 'History & Analytics',
-    history_description: 'View your progress history and trends',
-    record_count: 'Records',
-    avg_progress: 'Average Progress',
-    view_type: 'View Type',
-    view_all: 'All',
-    record_current: 'Record Current Progress',
-    clear_history: 'Clear',
-    no_history: 'No history records yet',
+    daysPassed: 'Passed',
+    daysRemaining: 'Remaining',
+    day: 'days',
 
-    // Common
-    days_passed: 'Passed',
-    days_remaining: 'Remaining',
-    days: 'days',
-    privacy_note: 'Data stored locally in browser, not uploaded to server',
-    footer_note: 'Built with Next.js + React + Tailwind CSS',
+    milestoneStart: '🌱 Journey begins',
+    milestone10: '🌿 10% complete, stay peaceful',
+    milestone25: '🍃 Quarter done, steady flow',
+    milestone50: '🌳 Halfway there, still graceful',
+    milestone75: '🌾 Three quarters, abundant journey',
+    milestone90: '🌙 Near completion, enjoy now',
+    milestone99: '✨ Almost complete, cherish this',
+    milestone100: '🎊 Complete, new beginning',
 
-    // Motivational messages
-    msg_start: 'Just started, a brand new year!',
-    msg_early: 'Early stage, keep the momentum!',
-    msg_good_start: 'Good start, keep moving forward!',
-    msg_quarter: 'Quarter passed, steady progress!',
-    msg_half: 'Half year passed!',
-    msg_sprint: 'Sprint stage, final push!',
-    msg_almost: 'Almost there, last effort!',
-    msg_complete: 'Year ended, thank you!',
+    privacyNote: 'Data stored locally, privacy respected',
+    builtWith: 'Built with care',
+
+    close: 'Close',
+    save: 'Save',
+    cancel: 'Cancel',
+    test: 'Test',
+  },
+
+  ja: {
+    appName: '時の流れ',
+    appTagline: '時の流れを優しく記録',
+    toggleTheme: 'テーマ変更',
+
+    progressTypes: {
+      year: '年間',
+      month: '月間',
+      week: '週間',
+      lifetime: '人生',
+    },
+
+    shapes: {
+      linear: 'リニア',
+      circular: 'サークル',
+      arc: 'アーク',
+    },
+
+    messages: {
+      beginning: '新しい旅の優しい始まり',
+      earlyStage: '初期段階、落ち着いて',
+      goodStart: '美しい始まり、流れに乗って',
+      quarterWay: '四分の一、着実に前進',
+      halfWay: '半分過ぎ、まだ優雅に',
+      threeQuarter: '豊かな旅、探索を続けて',
+      finalStretch: '最後の区間、今を楽しんで',
+      almostThere: 'もうすぐ、今を大切に',
+      complete: '周期が完了、新しい始まり',
+      setBirthdate: '生年月日を設定してください',
+    },
+
+    settings: {
+      title: '個人設定',
+      description: '時間記録を調整',
+      progressType: '進捗タイプ',
+      shape: '表示形状',
+      colorTheme: 'カラーテーマ',
+      primaryColor: 'メインカラー',
+      backgroundColor: '背景色',
+      showPercentage: '百分比表示',
+      showDaysRemaining: '日数表示',
+      birthdate: '生年月日',
+    },
+
+    panels: {
+      settings: '設定',
+      notifications: '通知',
+      share: '共有',
+      history: '履歴',
+    },
+
+    daysPassed: '経過',
+    daysRemaining: '残り',
+    day: '日',
+
+    milestoneStart: '🌱 旅の始まり',
+    milestone10: '🌿 10%達成、穏やかに',
+    milestone25: '🍃 四分の一、着実に',
+    milestone50: '🌳 半分、優雅に',
+    milestone75: '🌾 四分の三、豊かな旅',
+    milestone90: '🌙 もうすぐ、今を楽しんで',
+    milestone99: '✨ 間もなく、今を大切に',
+    milestone100: '🎊 完了、新しい始まり',
+
+    privacyNote: 'データはローカル保存、プライバシーを尊重',
+    builtWith: '丁寧に構築',
+
+    close: '閉じる',
+    save: '保存',
+    cancel: 'キャンセル',
+    test: 'テスト',
   },
 }
 
-export function t(lang: Language, key: keyof typeof translations.zh): string {
-  return translations[lang][key] || key
+export function t(locale: Locale, key: string): string {
+  const keys = key.split('.')
+  let value: any = translations[locale]
+
+  for (const k of keys) {
+    value = value?.[k]
+  }
+
+  return value || key
+}
+
+export function getMotivationalMessage(percentage: number, locale: Locale): string {
+  const msgs = translations[locale].messages
+
+  if (percentage === 0) return msgs.beginning
+  if (percentage < 10) return msgs.earlyStage
+  if (percentage < 25) return msgs.goodStart
+  if (percentage < 50) return msgs.quarterWay
+  if (percentage < 75) return msgs.halfWay
+  if (percentage < 90) return msgs.threeQuarter
+  if (percentage < 100) return msgs.finalStretch
+  return msgs.complete
+}
+
+export function getMilestoneMessage(percentage: number, locale: Locale): string | null {
+  const milestones = [1, 10, 25, 50, 75, 90, 99, 100]
+  const msgs = translations[locale]
+
+  for (const milestone of milestones) {
+    if (Math.abs(percentage - milestone) < 0.5) {
+      switch (milestone) {
+        case 1: return msgs.milestoneStart
+        case 10: return msgs.milestone10
+        case 25: return msgs.milestone25
+        case 50: return msgs.milestone50
+        case 75: return msgs.milestone75
+        case 90: return msgs.milestone90
+        case 99: return msgs.milestone99
+        case 100: return msgs.milestone100
+      }
+    }
+  }
+
+  return null
 }

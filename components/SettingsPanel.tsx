@@ -8,6 +8,7 @@ import { Switch } from './ui/switch'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { ProgressType, ProgressShape } from '@/lib/progress'
+import { Locale, translations } from '@/lib/i18n'
 
 interface SettingsPanelProps {
   config: {
@@ -20,68 +21,45 @@ interface SettingsPanelProps {
     birthDate?: string
   }
   onConfigChange: (config: any) => void
+  locale: Locale
 }
 
 const colorPresets = [
-  { name: '蓝色', primary: '#3b82f6', bg: '#e2e8f0' },
-  { name: '紫色', primary: '#8b5cf6', bg: '#f3e8ff' },
-  { name: '绿色', primary: '#22c55e', bg: '#dcfce7' },
-  { name: '红色', primary: '#ef4444', bg: '#fee2e2' },
-  { name: '橙色', primary: '#f97316', bg: '#ffedd5' },
-  { name: '青色', primary: '#06b6d4', bg: '#cffafe' },
+  { name: '🌿 Sage', primary: '#a7c7a0', bg: '#f5f5f0' },
+  { name: '🌸 Coral', primary: '#e8b4b8', bg: '#fef6f6' },
+  { name: '🌊 Aqua', primary: '#a7d1d9', bg: '#f0f7f8' },
+  { name: '🍑 Blush', primary: '#e8c4b8', bg: '#fef8f6' },
+  { name: '💜 Lavender', primary: '#c4b8d9', bg: '#f8f6fc' },
+  { name: '🌾 Wheat', primary: '#d4c4a8', bg: '#fcfaf6' },
 ]
 
-export function SettingsPanel({ config, onConfigChange }: SettingsPanelProps) {
+export function SettingsPanel({ config, onConfigChange, locale }: SettingsPanelProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const texts = translations[locale]
 
   return (
     <div className="w-full">
       <Button
         variant="outline"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full"
+        className="w-full btn-soft-secondary"
       >
-        {isOpen ? '隐藏设置' : '显示设置'}
+        {isOpen ? texts.close : texts.panels.settings}
       </Button>
 
       {isOpen && (
-        <Card className="mt-4">
+        <Card className="settings-panel mt-4">
           <CardHeader>
-            <CardTitle>自定义选项</CardTitle>
-            <CardDescription>个性化你的进度条</CardDescription>
+            <CardTitle className="display-font">{texts.settings.title}</CardTitle>
+            <CardDescription className="text-muted-foreground/80">
+              {texts.settings.description}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* 进度类型 */}
+            {/* Color presets */}
             <div className="space-y-2">
-              <Label>进度类型</Label>
-              <Select
-                value={config.type}
-                onChange={(e) => onConfigChange({ ...config, type: e.target.value as ProgressType })}
-              >
-                <option value="year">年度进度</option>
-                <option value="month">月度进度</option>
-                <option value="week">周进度</option>
-                <option value="lifetime">一生进度</option>
-              </Select>
-            </div>
-
-            {/* 形状 */}
-            <div className="space-y-2">
-              <Label>进度条形状</Label>
-              <Select
-                value={config.shape}
-                onChange={(e) => onConfigChange({ ...config, shape: e.target.value as ProgressShape })}
-              >
-                <option value="linear">线性</option>
-                <option value="circular">圆形</option>
-                <option value="arc">弧形</option>
-              </Select>
-            </div>
-
-            {/* 颜色预设 */}
-            <div className="space-y-2">
-              <Label>颜色主题</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label className="text-sm font-medium">{texts.settings.colorTheme}</Label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {colorPresets.map((preset) => (
                   <button
                     key={preset.name}
@@ -90,10 +68,10 @@ export function SettingsPanel({ config, onConfigChange }: SettingsPanelProps) {
                       primaryColor: preset.primary,
                       backgroundColor: preset.bg
                     })}
-                    className="flex items-center gap-2 p-2 border rounded-md hover:bg-accent transition-colors"
+                    className="flex items-center gap-2 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
                   >
                     <div
-                      className="w-6 h-6 rounded-full"
+                      className="w-8 h-8 rounded-full shadow-sm"
                       style={{ backgroundColor: preset.primary }}
                     />
                     <span className="text-sm">{preset.name}</span>
@@ -102,39 +80,39 @@ export function SettingsPanel({ config, onConfigChange }: SettingsPanelProps) {
               </div>
             </div>
 
-            {/* 自定义颜色 */}
+            {/* Custom colors */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>主色调</Label>
+                <Label className="text-xs text-muted-foreground">{texts.settings.primaryColor}</Label>
                 <Input
                   type="color"
                   value={config.primaryColor}
                   onChange={(e) => onConfigChange({ ...config, primaryColor: e.target.value })}
-                  className="h-10 w-full"
+                  className="h-12 w-full cursor-pointer"
                 />
               </div>
               <div className="space-y-2">
-                <Label>背景色</Label>
+                <Label className="text-xs text-muted-foreground">{texts.settings.backgroundColor}</Label>
                 <Input
                   type="color"
                   value={config.backgroundColor}
                   onChange={(e) => onConfigChange({ ...config, backgroundColor: e.target.value })}
-                  className="h-10 w-full"
+                  className="h-12 w-full cursor-pointer"
                 />
               </div>
             </div>
 
-            {/* 显示选项 */}
+            {/* Display options */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label>显示百分比</Label>
+                <Label className="text-sm">{texts.settings.showPercentage}</Label>
                 <Switch
                   checked={config.showPercentage}
                   onCheckedChange={(checked) => onConfigChange({ ...config, showPercentage: checked })}
                 />
               </div>
               <div className="flex items-center justify-between">
-                <Label>显示剩余天数</Label>
+                <Label className="text-sm">{texts.settings.showDaysRemaining}</Label>
                 <Switch
                   checked={config.showDaysRemaining}
                   onCheckedChange={(checked) => onConfigChange({ ...config, showDaysRemaining: checked })}
@@ -142,10 +120,10 @@ export function SettingsPanel({ config, onConfigChange }: SettingsPanelProps) {
               </div>
             </div>
 
-            {/* 出生日期（仅一生进度时显示） */}
+            {/* Birthdate (for lifetime) */}
             {config.type === 'lifetime' && (
               <div className="space-y-2">
-                <Label>出生日期</Label>
+                <Label className="text-sm font-medium">{texts.settings.birthdate}</Label>
                 <Input
                   type="date"
                   value={config.birthDate || ''}

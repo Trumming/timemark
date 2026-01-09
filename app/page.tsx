@@ -1,149 +1,243 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { ProgressBar } from '@/components/ProgressBar'
 import { SettingsPanel } from '@/components/SettingsPanel'
-import { NotificationPanel } from '@/components/NotificationPanel'
-import { SharePanel } from '@/components/SharePanel'
-import { HistoryPanel } from '@/components/HistoryPanel'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { ProgressConfig } from '@/lib/progress'
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage'
 import { useDarkMode } from '@/lib/hooks/useDarkMode'
 import { useProgress, useMilestone } from '@/lib/hooks/useProgress'
-import { Sun, Moon } from 'lucide-react'
+import { t, Locale, translations } from '@/lib/i18n'
 
 const defaultConfig: ProgressConfig = {
   type: 'year',
   shape: 'linear',
-  primaryColor: '#3b82f6',
-  backgroundColor: '#e2e8f0',
+  primaryColor: '#a7c7a0', // Soft sage green
+  backgroundColor: '#f5f5f0',
   showPercentage: true,
   showDaysRemaining: true,
   birthDate: undefined
 }
 
+function getShapeIcon(shape: string) {
+  switch (shape) {
+    case 'linear':
+      return (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="10" width="20" height="4" rx="2" />
+        </svg>
+      )
+    case 'circular':
+      return (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" fill="none" />
+          <circle cx="12" cy="12" r="10" fill="none" strokeDasharray="63" strokeDashoffset="16" transform="rotate(-90 12 12)" />
+        </svg>
+      )
+    case 'arc':
+      return (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 18 A 9 9 0 0 1 18 18" fill="none" />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
+
 export default function Home() {
   const [config, setConfig] = useLocalStorage<ProgressConfig>('progress-config', defaultConfig)
   const [darkMode, setDarkMode] = useDarkMode()
+  const [locale, setLocale] = useState<Locale>('zh')
 
-  const progressData = useProgress(config)
-  const { showMilestone, milestoneMessage, dismissMilestone } = useMilestone(progressData.percentage)
+  const progressData = useProgress(config, locale)
+  const { showMilestone, milestoneMessage, dismissMilestone } = useMilestone(progressData.percentage, locale)
 
-  const typeLabel = useMemo(() => {
-    const year = new Date().getFullYear()
-    const labels = {
-      year: `${year}年度进度`,
-      month: '本月进度',
-      week: '本周进度',
-      lifetime: '人生进度'
-    }
-    return labels[config.type]
-  }, [config.type])
+  const texts = translations[locale]
 
   return (
-    <main className={`min-h-screen py-8 px-4 transition-colors ${darkMode ? 'dark' : ''}`}>
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* 头部 */}
-        <header className="text-center space-y-4">
-          <div className="flex items-center justify-between">
-            <div />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              年度进度条
-            </h1>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg hover:bg-accent transition-colors"
-              aria-label="切换暗黑模式"
-            >
-              {darkMode ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-          <p className="text-muted-foreground">
-            可视化时间进度，珍惜每一刻
-          </p>
-        </header>
+    <main className={`min-h-screen transition-colors duration-700 ${darkMode ? 'dark' : ''}`}>
+      {/* Ambient background glow */}
+      <div className="ambient-glow" />
 
-        {showMilestone && milestoneMessage && (
-          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-full shadow-lg font-medium flex items-center gap-2">
-              <span>{milestoneMessage}</span>
-              <button
-                onClick={dismissMilestone}
-                className="hover:bg-white/20 rounded-full p-1 transition-colors"
-                aria-label="关闭提示"
-              >
-                ✕
-              </button>
+      <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+        {/* Staggered fade-in animations */}
+        <div className="stagger-children space-y-8 md:space-y-12">
+          {/* Header */}
+          <header className="glass-gentle rounded-3xl p-6 md:p-10">
+            <div className="flex items-start justify-between gap-6">
+              {/* Logo & Title */}
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-6xl gradient-dawn mb-3 display-font">
+                  {texts.appName}
+                </h1>
+                <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">
+                  {texts.appTagline}
+                </p>
+              </div>
+
+              {/* Controls */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <LanguageSwitcher
+                  currentLocale={locale}
+                  onLocaleChange={setLocale}
+                />
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
+                  aria-label={texts.toggleTheme}
+                >
+                  {darkMode ? (
+                    <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          </header>
 
-        {/* 进度条展示区 */}
-        <div className="bg-card rounded-lg p-8 shadow-lg border">
-          <div className="text-center space-y-4">
-            <h2 className="text-2xl font-semibold">{typeLabel}</h2>
-
-            <div className="flex items-center justify-center py-8">
-              <ProgressBar
-                shape={config.shape}
-                percentage={progressData.percentage}
-                primaryColor={config.primaryColor}
-                backgroundColor={config.backgroundColor}
-                showPercentage={config.showPercentage}
-              />
+          {/* Milestone notification */}
+          {showMilestone && milestoneMessage && (
+            <div className="fade-gentle">
+              <div className="glass-gentle rounded-2xl px-8 py-5 max-w-md mx-auto text-center animate-breathe">
+                <p className="text-lg font-medium gradient-dawn">
+                  {milestoneMessage}
+                </p>
+                <button
+                  onClick={dismissMilestone}
+                  className="mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {texts.close}
+                </button>
+              </div>
             </div>
+          )}
 
-            {/* 进度信息 */}
-            <div className="space-y-2">
-              <p className="text-xl font-medium">{progressData.message}</p>
-              {config.showDaysRemaining && (
-                <div className="flex justify-center gap-8 text-sm text-muted-foreground">
-                  <span>已过 {progressData.daysPassed} 天</span>
-                  <span>剩余 {progressData.daysRemaining} 天</span>
+          {/* Progress display */}
+          <div className="progress-card fade-gentle" style={{ animationDelay: '200ms' }}>
+            <div className="text-center space-y-8">
+              {/* Progress type and shape switchers */}
+              <div className="space-y-6">
+                {/* Type and shape selector tabs */}
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
+                  {/* Progress type selector */}
+                  <div className="inline-flex items-center gap-1 p-1 rounded-2xl bg-black/5 dark:bg-white/5 backdrop-blur-sm">
+                    {(Object.keys(texts.progressTypes) as Array<keyof typeof texts.progressTypes>).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setConfig({ ...config, type })}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                          config.type === type
+                            ? 'bg-white dark:bg-black shadow-md text-foreground'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5'
+                        }`}
+                      >
+                        {texts.progressTypes[type]}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Shape selector */}
+                  <div className="inline-flex items-center gap-1 p-1 rounded-2xl bg-black/5 dark:bg-white/5 backdrop-blur-sm">
+                    {(Object.keys(texts.shapes) as Array<keyof typeof texts.shapes>).map((shape) => (
+                      <button
+                        key={shape}
+                        onClick={() => setConfig({ ...config, shape })}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                          config.shape === shape
+                            ? 'bg-white dark:bg-black shadow-md text-foreground'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5'
+                        }`}
+                        title={texts.shapes[shape]}
+                      >
+                        {getShapeIcon(shape)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
+
+                {/* Current year/month label */}
+                <div className="space-y-2">
+                  <h2 className="text-2xl md:text-3xl font-light display-font">
+                    {config.type === 'year'
+                      ? new Date().getFullYear()
+                      : config.type === 'month'
+                      ? new Date().toLocaleDateString(locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja-JP' : 'en-US', { month: 'long', year: 'numeric' })
+                      : texts.progressTypes[config.type]}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="py-8">
+                <ProgressBar
+                  shape={config.shape}
+                  percentage={progressData.percentage}
+                  primaryColor={config.primaryColor}
+                  backgroundColor={config.backgroundColor}
+                  showPercentage={config.showPercentage}
+                />
+              </div>
+
+              {/* Progress message */}
+              <div className="space-y-6">
+                <p className="text-xl md:text-2xl font-light leading-relaxed text-foreground/90">
+                  {progressData.message}
+                </p>
+
+                {/* Day counters */}
+                {config.showDaysRemaining && (
+                  <div className="flex justify-center gap-6 md:gap-12 text-sm">
+                    <div className="text-center space-y-1">
+                      <p className="text-2xl md:text-3xl font-light gradient-dawn display-font">
+                        {progressData.daysPassed}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {texts.daysPassed}
+                      </p>
+                    </div>
+                    <div className="text-center space-y-1">
+                      <p className="text-2xl md:text-3xl font-light gradient-dawn display-font">
+                        {progressData.daysRemaining}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {texts.daysRemaining}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* 功能面板网格 */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* 设置面板 */}
-          <div>
-            <SettingsPanel config={config} onConfigChange={setConfig} />
-          </div>
-
-          {/* 通知面板 */}
-          <div>
-            <NotificationPanel percentage={progressData.percentage} />
-          </div>
-
-          {/* 分享面板 */}
-          <div>
-            <SharePanel
-              percentage={progressData.percentage}
-              type={config.type}
-              shape={config.shape}
+          {/* Settings panel */}
+          <div className="fade-gentle" style={{ animationDelay: '400ms' }}>
+            <SettingsPanel
+              config={config}
+              onConfigChange={setConfig}
+              locale={locale}
             />
           </div>
 
-          {/* 历史面板 */}
-          <div>
-            <HistoryPanel />
-          </div>
+          {/* Footer */}
+          <footer className="text-center py-8 space-y-2 fade-gentle" style={{ animationDelay: '600ms' }}>
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span>{texts.privacyNote}</span>
+            </div>
+            <p className="text-xs text-muted-foreground/70">
+              {texts.builtWith}
+            </p>
+          </footer>
         </div>
-
-        {/* 页脚 */}
-        <footer className="text-center text-sm text-muted-foreground py-8">
-          <p>数据保存在本地浏览器，不会上传到服务器</p>
-          <p className="mt-2">
-            使用 Next.js + React + Tailwind CSS 构建
-          </p>
-        </footer>
       </div>
     </main>
   )
