@@ -61,45 +61,49 @@ export default function Home() {
       {/* Ambient background glow */}
       <div className="ambient-glow" />
 
-      <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+      {/* Top Control Bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 glass-gentle border-b border-black/5 dark:border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+          {/* Left side - can add logo or menu later */}
+          <div className="w-24" />
+
+          {/* Right side - Controls */}
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher
+              currentLocale={locale}
+              onLocaleChange={setLocale}
+            />
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
+              aria-label={texts.toggleTheme}
+            >
+              {darkMode ? (
+                <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 pt-24 pb-12 md:pt-32 md:pb-20">
         {/* Staggered fade-in animations */}
         <div className="stagger-children space-y-8 md:space-y-12">
           {/* Header */}
-          <header className="glass-gentle rounded-3xl p-6 md:p-10">
-            <div className="flex items-start justify-between gap-6">
-              {/* Logo & Title */}
-              <div className="flex-1">
-                <h1 className="text-4xl md:text-6xl gradient-dawn mb-3 display-font">
-                  {texts.appName}
-                </h1>
-                <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">
-                  {texts.appTagline}
-                </p>
-              </div>
-
-              {/* Controls */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <LanguageSwitcher
-                  currentLocale={locale}
-                  onLocaleChange={setLocale}
-                />
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
-                  aria-label={texts.toggleTheme}
-                >
-                  {darkMode ? (
-                    <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
+          <header className="glass-gentle rounded-3xl p-6 md:p-10 text-center">
+            {/* Logo & Title */}
+            <h1 className="text-4xl md:text-6xl gradient-dawn mb-3 display-font">
+              {texts.appName}
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">
+              {texts.appTagline}
+            </p>
           </header>
 
           {/* Milestone notification */}
