@@ -6,9 +6,8 @@ const nextConfig = {
     domains: [],
   },
   output: 'export',
-  // If your repo is not at the root, set basePath and assetPrefix:
-  // basePath: '/timemark',
-  // assetPrefix: '/timemark/',
+  basePath: '/timemark',
+  assetPrefix: '/timemark/',
 }
 
 module.exports = nextConfig
