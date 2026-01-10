@@ -46,7 +46,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
   const gradientEnd = '#e8d5f0'
 
   // Calculate circular progress
-  const radius = 180
+  const radius = 170
   const circumference = 2 * Math.PI * radius
   const progressOffset = circumference - (percentage / 100) * circumference
   const startAngle = -90 // Start from top
@@ -72,13 +72,6 @@ function generateProgressSvg(options: SvgExportOptions): string {
       <stop offset="100%" style="stop-color:#f0ede7;stop-opacity:1" />
     </linearGradient>
 
-    <!-- Dawn gradient for progress ring -->
-    <linearGradient id="dawnGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:${gradientStart};stop-opacity:1" />
-      <stop offset="50%" style="stop-color:${gradientMid};stop-opacity:1" />
-      <stop offset="100%" style="stop-color:${gradientEnd};stop-opacity:1" />
-    </linearGradient>
-
     <!-- Soft shadow for glass card -->
     <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="30" result="blur"/>
@@ -97,9 +90,9 @@ function generateProgressSvg(options: SvgExportOptions): string {
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.03 0"/>
     </filter>
 
-    <!-- Enhanced glow effect for percentage and ring -->
+    <!-- Glow effect for progress ring and percentage -->
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -157,9 +150,9 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .percentage {
         font-family: 'Outfit', sans-serif;
-        font-size: 128px;
-        font-weight: 300;
-        fill: url(#dawnGradient);
+        font-size: 80px;
+        font-weight: 500;
+        fill: ${primaryColor};
         filter: url(#glow);
       }
 
@@ -213,15 +206,15 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .progress-ring-bg {
         fill: none;
-        stroke: rgba(167, 199, 160, 0.1);
-        stroke-width: 14;
+        stroke: rgba(0, 0, 0, 0.06);
+        stroke-width: 22;
         stroke-linecap: round;
       }
 
       .progress-ring {
         fill: none;
-        stroke: url(#dawnGradient);
-        stroke-width: 14;
+        stroke: ${primaryColor};
+        stroke-width: 22;
         stroke-linecap: round;
         stroke-dasharray: ${circumference};
         stroke-dashoffset: ${progressOffset};
@@ -259,7 +252,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <text x="${centerX}" y="215" text-anchor="middle" class="title">时光印记</text>
   <text x="${centerX}" y="250" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · 年度进度' : type}</text>
 
-  <!-- Progress ring - centered better with thicker stroke -->
+  <!-- Progress ring - thicker, with user's color, and smaller percentage -->
   <g transform="translate(${centerX}, 510)">
     <!-- Background ring -->
     <circle cx="0" cy="0" r="${radius}" class="progress-ring-bg"/>
@@ -267,11 +260,11 @@ function generateProgressSvg(options: SvgExportOptions): string {
     <circle cx="0" cy="0" r="${radius}" class="progress-ring"/>
 
     <!-- Decorative inner circles -->
-    <circle cx="0" cy="0" r="${radius - 25}" fill="none" stroke="${gradientStart}" stroke-width="0.5" opacity="0.12"/>
-    <circle cx="0" cy="0" r="${radius - 50}" fill="none" stroke="${gradientMid}" stroke-width="0.5" opacity="0.08"/>
+    <circle cx="0" cy="0" r="${radius - 30}" fill="none" stroke="${gradientStart}" stroke-width="0.5" opacity="0.12"/>
+    <circle cx="0" cy="0" r="${radius - 55}" fill="none" stroke="${gradientMid}" stroke-width="0.5" opacity="0.08"/>
   </g>
 
-  <!-- Percentage in center -->
+  <!-- Percentage in center - smaller size to avoid overlap -->
   <text x="${centerX}" y="535" text-anchor="middle" class="percentage">${percentageText}</text>
 
   <!-- Message - improved spacing -->
