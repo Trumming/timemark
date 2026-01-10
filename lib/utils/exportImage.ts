@@ -40,68 +40,91 @@ export async function exportElementAsImage(
     console.log('Starting image export for:', element)
     console.log('Element dimensions:', element.offsetWidth, 'x', element.offsetHeight)
 
-    // Create a canvas from the element
-    let canvas: HTMLCanvasElement
-    try {
-      canvas = await html2canvas(element, {
-        backgroundColor,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        scale: 2,
-        onclone: (clonedDoc: Document) => {
-          // Remove elements and classes that cause CSS parsing issues
-          const allElements = clonedDoc.querySelectorAll('*')
-          allElements.forEach(el => {
-            // Remove gradient-dawn class which uses CSS variables
-            el.classList.remove('gradient-dawn')
+    // Store original classes and styles
+    const originalClasses: Array<{ el: Element, classes: string[] }> = []
+    const originalStyles: Array<{ el: HTMLElement, style: string }> = []
 
-            // Remove text-transparent class that works with gradients
-            if (el.classList.contains('text-transparent') ||
-                el.classList.contains('bg-clip-text')) {
-              el.classList.remove('text-transparent', 'bg-clip-text')
-            }
-          })
+    // Temporarily remove problematic classes and styles
+    const allElements = element.querySelectorAll('*')
+    allElements.forEach(el => {
+      // Store original classes
+      if (el.classList.contains('gradient-dawn')) {
+        originalClasses.push({ el, classes: Array.from(el.classList) })
+        el.classList.remove('gradient-dawn')
+      }
+      if (el.classList.contains('text-transparent')) {
+        originalClasses.push({ el, classes: Array.from(el.classList) })
+        el.classList.remove('text-transparent')
+      }
 
-          // Force solid background on glass-gentle elements
-          const glassElements = clonedDoc.querySelectorAll('.glass-gentle')
-          glassElements.forEach((el: any) => {
-            el.style.background = '#ffffff'
-            el.style.backgroundColor = '#ffffff'
-          })
-        },
-      } as any)
-      console.log('Canvas created successfully:', canvas.width, 'x', canvas.height)
-    } catch (err) {
-      console.error('html2canvas failed:', err)
-      throw new Error(`html2canvas failed: ${err}`)
+      // Force solid background on glass-gentle elements
+      if (el.classList.contains('glass-gentle') && el instanceof HTMLElement) {
+        originalStyles.push({ el, style: el.style.cssText })
+        el.style.background = '#ffffff'
+        el.style.backgroundColor = '#ffffff'
+        el.style.boxShadow = '0 4px 24px -1px rgb(0 0 0 / 0.04)'
+      }
+    })
+
+    // Handle the main element too
+    if (element.classList.contains('glass-gentle')) {
+      originalStyles.push({ el: element, style: element.style.cssText })
+      element.style.background = '#ffffff'
+      element.style.backgroundColor = '#ffffff'
+      element.style.boxShadow = '0 4px 24px -1px rgb(0 0 0 / 0.04)'
     }
 
-    // Convert canvas to blob
-    let blob: Blob
     try {
-      blob = await canvasToBlob(canvas, 'image/png')
-      console.log('Blob created successfully:', blob.size, 'bytes')
-    } catch (err) {
-      console.error('canvasToBlob failed:', err)
-      throw new Error(`canvasToBlob failed: ${err}`)
+      // Create a canvas from the element
+      let canvas: HTMLCanvasElement
+      try {
+        canvas = await html2canvas(element, {
+          backgroundColor,
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          scale: 2,
+        } as any)
+        console.log('Canvas created successfully:', canvas.width, 'x', canvas.height)
+      } catch (err) {
+        console.error('html2canvas failed:', err)
+        throw new Error(`html2canvas failed: ${err}`)
+      }
+
+      // Convert canvas to blob
+      let blob: Blob
+      try {
+        blob = await canvasToBlob(canvas, 'image/png')
+        console.log('Blob created successfully:', blob.size, 'bytes')
+      } catch (err) {
+        console.error('canvasToBlob failed:', err)
+        throw new Error(`canvasToBlob failed: ${err}`)
+      }
+
+      // Create download link
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }, 100)
+
+      console.log('Image export completed successfully')
+    } finally {
+      // Restore original classes and styles
+      originalClasses.forEach(({ el, classes }) => {
+        el.className = classes.join(' ')
+      })
+      originalStyles.forEach(({ el, style }) => {
+        el.style.cssText = style
+      })
     }
-
-    // Create download link
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-
-    // Cleanup
-    setTimeout(() => {
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-    }, 100)
-
-    console.log('Image export completed successfully')
   } catch (error) {
     console.error('Failed to export image. Error details:', {
       message: error instanceof Error ? error.message : String(error),
