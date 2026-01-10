@@ -39,6 +39,58 @@ export function SharePanel({
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
 
+  // Localized labels
+  const labels = {
+    zh: {
+      title: '分享与导出',
+      description: '分享进度或嵌入到你的网站',
+      socialShare: '分享到社交媒体',
+      x: 'X (Twitter)',
+      weibo: '微博',
+      copyText: '复制分享文本',
+      generating: '生成中...',
+      saveImage: '保存图片',
+      exportImage: '导出为图片',
+      imageHint: '保存进度卡片图片用于社交媒体分享',
+      embedCode: '嵌入到网站',
+      copyCode: '复制代码并粘贴到你的网站HTML中',
+      copyFailed: '复制失败:',
+      exportFailed: '导出图片失败:'
+    },
+    en: {
+      title: 'Share & Export',
+      description: 'Share your progress or embed it on your website',
+      socialShare: 'Share to Social Media',
+      x: 'X (Twitter)',
+      copyText: 'Copy Share Text',
+      generating: 'Generating...',
+      saveImage: 'Save Image',
+      exportImage: 'Export as Image',
+      imageHint: 'Save progress card image for social media sharing',
+      embedCode: 'Embed to Website',
+      copyCode: 'Copy code and paste to your website HTML',
+      copyFailed: 'Copy failed:',
+      exportFailed: 'Failed to export image:'
+    },
+    ja: {
+      title: '共有とエクスポート',
+      description: '進捗を共有またはウェブサイトに埋め込み',
+      socialShare: 'ソーシャルメディアで共有',
+      x: 'X (Twitter)',
+      copyText: '共有テキストをコピー',
+      generating: '生成中...',
+      saveImage: '画像を保存',
+      exportImage: '画像としてエクスポート',
+      imageHint: 'ソーシャルメディア共有のための進捗カード画像を保存',
+      embedCode: 'ウェブサイトに埋め込み',
+      copyCode: 'コードをコピーしてウェブサイトのHTMLに貼り付け',
+      copyFailed: 'コピーに失敗しました:',
+      exportFailed: '画像のエクスポートに失敗しました:'
+    }
+  }
+
+  const lang = labels[locale as keyof typeof labels] || labels.zh
+
   // Get localized share texts
   const getShareText = () => {
     const currentYear = new Date().getFullYear()
@@ -76,11 +128,11 @@ export function SharePanel({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('复制失败:', err)
+      console.error(lang.copyFailed, err)
     }
   }
 
-  const shareToTwitter = () => {
+  const shareToX = () => {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
     window.open(twitterUrl, '_blank')
   }
@@ -113,7 +165,7 @@ export function SharePanel({
     } catch (error) {
       console.error('Failed to export image:', error)
       const errorMsg = error instanceof Error ? error.message : String(error)
-      alert(`导出图片失败: ${errorMsg}`)
+      alert(`${lang.exportFailed} ${errorMsg}`)
     } finally {
       setIsDownloading(false)
     }
@@ -138,7 +190,7 @@ export function SharePanel({
       setEmbedCopied(true)
       setTimeout(() => setEmbedCopied(false), 2000)
     } catch (err) {
-      console.error('复制失败:', err)
+      console.error(lang.copyFailed, err)
     }
   }
 
@@ -147,27 +199,29 @@ export function SharePanel({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Share2 className="w-5 h-5" />
-          分享与导出
+          {lang.title}
         </CardTitle>
-        <CardDescription>分享进度或嵌入到你的网站</CardDescription>
+        <CardDescription>{lang.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* 社交分享 */}
+        {/* Social Media Share */}
         <div className="space-y-2">
-          <Label>分享到社交媒体</Label>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={shareToTwitter}>
-              Twitter/X
+          <Label>{lang.socialShare}</Label>
+          <div className={locale === 'zh' ? 'grid grid-cols-2 gap-2' : ''}>
+            <Button variant="outline" onClick={shareToX} className={locale !== 'zh' ? 'w-full' : ''}>
+              {lang.x}
             </Button>
-            <Button variant="outline" onClick={shareToWeibo}>
-              微博
-            </Button>
+            {locale === 'zh' && (
+              <Button variant="outline" onClick={shareToWeibo}>
+                {lang.weibo}
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* 复制文本 */}
+        {/* Copy Share Text */}
         <div className="space-y-2">
-          <Label>复制分享文本</Label>
+          <Label>{lang.copyText}</Label>
           <div className="flex gap-2">
             <Input
               value={shareText}
@@ -188,9 +242,9 @@ export function SharePanel({
           </div>
         </div>
 
-        {/* 下载图片 */}
+        {/* Download Image */}
         <div className="space-y-2">
-          <Label>导出为图片</Label>
+          <Label>{lang.exportImage}</Label>
           <Button
             variant="outline"
             className="w-full"
@@ -200,23 +254,23 @@ export function SharePanel({
             {isDownloading ? (
               <>
                 <Download className="w-4 h-4 mr-2 animate-pulse" />
-                生成中...
+                {lang.generating}
               </>
             ) : (
               <>
                 <ImageIcon className="w-4 h-4 mr-2" />
-                保存图片
+                {lang.saveImage}
               </>
             )}
           </Button>
           <p className="text-xs text-muted-foreground">
-            保存进度卡片图片用于社交媒体分享
+            {lang.imageHint}
           </p>
         </div>
 
-        {/* 嵌入代码 */}
+        {/* Embed Code */}
         <div className="space-y-2">
-          <Label>嵌入到网站</Label>
+          <Label>{lang.embedCode}</Label>
           <div className="flex gap-2">
             <Input
               value={embedCode}
@@ -236,7 +290,7 @@ export function SharePanel({
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            复制代码并粘贴到你的网站HTML中
+            {lang.copyCode}
           </p>
         </div>
       </CardContent>
