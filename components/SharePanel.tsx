@@ -7,7 +7,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Share2, Copy, Check, Download, Image as ImageIcon } from 'lucide-react'
 import { ProgressShape, ProgressType } from '@/lib/progress'
-import { exportElementAsImage } from '@/lib/utils/exportImage'
+import { exportProgressAsImage } from '@/lib/utils/exportSvg'
 
 interface SharePanelProps {
   percentage: number
@@ -15,9 +15,23 @@ interface SharePanelProps {
   shape: ProgressShape
   progressCardRef: React.RefObject<HTMLDivElement>
   locale?: string
+  message?: string
+  daysPassed?: number
+  daysRemaining?: number
+  primaryColor?: string
 }
 
-export function SharePanel({ percentage, type, shape, progressCardRef, locale = 'zh' }: SharePanelProps) {
+export function SharePanel({
+  percentage,
+  type,
+  shape,
+  progressCardRef,
+  locale = 'zh',
+  message = '',
+  daysPassed = 0,
+  daysRemaining = 0,
+  primaryColor = '#a7c7a0'
+}: SharePanelProps) {
   const [copied, setCopied] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -76,29 +90,22 @@ export function SharePanel({ percentage, type, shape, progressCardRef, locale = 
 
   const downloadImage = async () => {
     console.log('downloadImage called')
-    console.log('progressCardRef:', progressCardRef)
-    console.log('progressCardRef.current:', progressCardRef.current)
-
-    if (!progressCardRef.current) {
-      console.error('Progress card element not found')
-      alert('无法找到进度卡片元素')
-      return
-    }
-
-    console.log('Element found, offset dimensions:', {
-      width: progressCardRef.current.offsetWidth,
-      height: progressCardRef.current.offsetHeight,
-      className: progressCardRef.current.className
-    })
 
     setIsDownloading(true)
     try {
       const currentYear = new Date().getFullYear()
       const filename = `${type}-progress-${currentYear}.png`
 
-      await exportElementAsImage(progressCardRef.current, {
+      await exportProgressAsImage({
+        percentage,
+        type,
+        shape,
+        primaryColor,
+        message,
+        daysPassed,
+        daysRemaining,
+        locale,
         filename,
-        backgroundColor: '', // Use transparent background
       })
     } catch (error) {
       console.error('Failed to export image:', error)

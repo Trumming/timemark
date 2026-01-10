@@ -242,6 +242,10 @@ export default function Home() {
               shape={config.shape}
               progressCardRef={progressCardRef}
               locale={locale}
+              message={progressData.message}
+              daysPassed={progressData.daysPassed}
+              daysRemaining={progressData.daysRemaining}
+              primaryColor={config.primaryColor}
             />
           </div>
 
