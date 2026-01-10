@@ -45,8 +45,8 @@ function generateProgressSvg(options: SvgExportOptions): string {
   // Calculate circular progress - larger radius for bigger ring
   const radius = 220
   const circumference = 2 * Math.PI * radius
-  const progressOffset = circumference - (percentage / 100) * circumference
-  const startAngle = -90 // Start from top (12 o'clock position)
+  const progressOffset = circumference * (1 - percentage / 100)
+  const startAngle = 90 // Start from bottom, rotate counter-clockwise for counter-clockwise fill
 
   // Get current timestamp for sharing
   const now = new Date()
@@ -87,7 +87,14 @@ function generateProgressSvg(options: SvgExportOptions): string {
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.03 0"/>
     </filter>
 
-
+    <!-- Glow effect for progress ring and percentage -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
 
     <!-- Font definitions -->
     <style>
@@ -124,7 +131,6 @@ function generateProgressSvg(options: SvgExportOptions): string {
         font-size: 90px;
         font-weight: 600;
         fill: ${primaryColor};
-        filter: url(#glow);
       }
 
       .message {
@@ -187,11 +193,6 @@ function generateProgressSvg(options: SvgExportOptions): string {
         stroke: ${primaryColor};
         stroke-width: 22;
         stroke-linecap: round;
-        stroke-dasharray: ${circumference};
-        stroke-dashoffset: ${progressOffset};
-        transform: rotate(${startAngle}deg);
-        transform-origin: center;
-        filter: url(#glow);
       }
     </style>
   </defs>
@@ -216,11 +217,17 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <text x="${centerX}" y="250" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · 年度进度' : type}</text>
 
   <!-- Progress ring - much larger and thicker, shows actual progress -->
-  <g transform="translate(${centerX}, 520)">
+  <g transform="translate(${centerX}, 520) rotate(-90) scale(1, -1)">
     <!-- Background ring - uses user's background color -->
     <circle cx="0" cy="0" r="${radius}" class="progress-ring-bg"/>
     <!-- Progress ring - shows actual progress with user's primary color -->
-    <circle cx="0" cy="0" r="${radius}" class="progress-ring"/>
+    <circle cx="0" cy="0" r="${radius}"
+      fill="none"
+      stroke="${primaryColor}"
+      stroke-width="22"
+      stroke-linecap="round"
+      stroke-dasharray="${circumference}"
+      stroke-dashoffset="${progressOffset}"/>
   </g>
 
   <!-- Percentage in center - larger to fill the bigger ring -->
@@ -335,11 +342,8 @@ export async function exportProgressAsImage(options: SvgExportOptions): Promise<
   const filename = options.filename || `progress-${Date.now()}.png`
 
   try {
-    console.log('Generating SVG for export...')
     const svgString = generateProgressSvg(options)
-    console.log('Converting SVG to PNG...')
     await svgToPng(svgString, filename)
-    console.log('Image export completed')
   } catch (error) {
     console.error('Failed to export image:', error)
     throw error
