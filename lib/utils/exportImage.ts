@@ -7,6 +7,21 @@ export interface ExportImageOptions {
 }
 
 /**
+ * Convert canvas to blob as a Promise
+ */
+function canvasToBlob(canvas: HTMLCanvasElement, type = 'image/png', quality = 1): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob)
+      } else {
+        reject(new Error('Canvas toBlob failed'))
+      }
+    }, type, quality)
+  })
+}
+
+/**
  * Export a DOM element as an image
  * @param element - The DOM element to capture
  * @param options - Export options
@@ -19,48 +34,42 @@ export async function exportElementAsImage(
   const {
     filename = 'progress-share.png',
     backgroundColor = '#ffffff',
-    padding = 0
   } = options
 
   try {
+    console.log('Starting image export for:', element)
+
     // Create a canvas from the element
     const canvas = await html2canvas(element, {
       backgroundColor,
-      logging: false,
+      logging: true, // Enable logging for debugging
       useCORS: true,
       allowTaint: true,
-      // Note: Using window.devicePixelRatio for higher quality
-      // The scale option is available in html2canvas 1.4+ but not in @types
+      scale: 2, // Use scale option for higher quality
     } as any)
 
-    // Scale the canvas for better quality
-    const scaledCanvas = document.createElement('canvas')
-    const ctx = scaledCanvas.getContext('2d')
-    const scale = 2 // 2x for better quality
-    scaledCanvas.width = canvas.width * scale
-    scaledCanvas.height = canvas.height * scale
+    console.log('Canvas created:', canvas.width, 'x', canvas.height)
 
-    if (ctx) {
-      ctx.scale(scale, scale)
-      ctx.drawImage(canvas, 0, 0)
-    }
+    // Convert canvas to blob
+    const blob = await canvasToBlob(canvas, 'image/png')
 
-    // Convert canvas to blob and download
-    scaledCanvas.toBlob((blob) => {
-      if (!blob) {
-        throw new Error('Failed to generate image')
-      }
+    console.log('Blob created:', blob.size, 'bytes')
 
-      // Create download link
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = filename
-      document.body.appendChild(link)
-      link.click()
+    // Create download link
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+
+    // Cleanup
+    setTimeout(() => {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
-    }, 'image/png')
+    }, 100)
+
+    console.log('Image export completed')
   } catch (error) {
     console.error('Failed to export image:', error)
     throw error
@@ -87,21 +96,10 @@ export async function generateImageDataURL(
       logging: false,
       useCORS: true,
       allowTaint: true,
+      scale: 2,
     } as any)
 
-    // Scale for better quality
-    const scaledCanvas = document.createElement('canvas')
-    const ctx = scaledCanvas.getContext('2d')
-    const scale = 2
-    scaledCanvas.width = canvas.width * scale
-    scaledCanvas.height = canvas.height * scale
-
-    if (ctx) {
-      ctx.scale(scale, scale)
-      ctx.drawImage(canvas, 0, 0)
-    }
-
-    return scaledCanvas.toDataURL('image/png')
+    return canvas.toDataURL('image/png')
   } catch (error) {
     console.error('Failed to generate image data URL:', error)
     throw error
