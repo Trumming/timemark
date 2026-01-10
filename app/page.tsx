@@ -48,7 +48,7 @@ function getShapeIcon(shape: string) {
 }
 
 export default function Home() {
-  const [config, setConfig] = useLocalStorage<ProgressConfig>('progress-config', defaultConfig)
+  const [config, setConfig, isConfigLoaded] = useLocalStorage<ProgressConfig>('progress-config', defaultConfig)
   const [darkMode, setDarkMode] = useDarkMode()
   const [locale, setLocale] = useState<Locale>('zh')
 
@@ -59,6 +59,22 @@ export default function Home() {
   const { showMilestone, milestoneMessage, dismissMilestone } = useMilestone(progressData.percentage, locale)
 
   const texts = translations[locale]
+
+  // Don't render until config is loaded to prevent shape type flashing
+  if (!isConfigLoaded) {
+    return (
+      <main className={`min-h-screen transition-colors duration-700 ${darkMode ? 'dark' : ''}`}>
+        <div className="ambient-glow" />
+        <div className="min-h-screen flex items-center justify-center">
+          {/* Loading spinner */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="text-sm text-muted-foreground">Loading...</div>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className={`min-h-screen transition-colors duration-700 ${darkMode ? 'dark' : ''}`}>
@@ -113,7 +129,7 @@ export default function Home() {
 
       <div className="max-w-6xl mx-auto px-4 pt-12 pb-12 md:pt-16 md:pb-20">
         {/* Staggered fade-in animations */}
-        <div className="stagger-children space-y-8 md:space-y-12">
+        <div className="stagger-children space-y-6 md:space-y-8">
           {/* Milestone notification */}
           {showMilestone && milestoneMessage && (
             <div className="fade-gentle">
