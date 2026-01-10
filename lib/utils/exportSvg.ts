@@ -51,6 +51,16 @@ function generateProgressSvg(options: SvgExportOptions): string {
   const progressOffset = circumference - (percentage / 100) * circumference
   const startAngle = -90 // Start from top
 
+  // Get current timestamp for sharing
+  const now = new Date()
+  const timestamp = now.toLocaleDateString(locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja-JP' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+
   // Generate premium SVG with improved spacing
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -87,9 +97,9 @@ function generateProgressSvg(options: SvgExportOptions): string {
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.03 0"/>
     </filter>
 
-    <!-- Glow effect for percentage -->
+    <!-- Enhanced glow effect for percentage and ring -->
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -193,17 +203,25 @@ function generateProgressSvg(options: SvgExportOptions): string {
         letter-spacing: 0.25em;
       }
 
+      .timestamp {
+        font-family: 'Outfit', sans-serif;
+        font-size: 10px;
+        font-weight: 400;
+        fill: #c8c8c8;
+        letter-spacing: 0.08em;
+      }
+
       .progress-ring-bg {
         fill: none;
-        stroke: rgba(167, 199, 160, 0.08);
-        stroke-width: 6;
+        stroke: rgba(167, 199, 160, 0.1);
+        stroke-width: 14;
         stroke-linecap: round;
       }
 
       .progress-ring {
         fill: none;
         stroke: url(#dawnGradient);
-        stroke-width: 6;
+        stroke-width: 14;
         stroke-linecap: round;
         stroke-dasharray: ${circumference};
         stroke-dashoffset: ${progressOffset};
@@ -241,7 +259,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <text x="${centerX}" y="215" text-anchor="middle" class="title">时光印记</text>
   <text x="${centerX}" y="250" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · 年度进度' : type}</text>
 
-  <!-- Progress ring - centered better -->
+  <!-- Progress ring - centered better with thicker stroke -->
   <g transform="translate(${centerX}, 510)">
     <!-- Background ring -->
     <circle cx="0" cy="0" r="${radius}" class="progress-ring-bg"/>
@@ -277,7 +295,10 @@ function generateProgressSvg(options: SvgExportOptions): string {
         stroke="${gradientStart}" stroke-width="1" opacity="0.25" stroke-linecap="round"/>
 
   <!-- Footer - adjusted for better spacing -->
-  <text x="${centerX}" y="865" text-anchor="middle" class="footer">${lang.footer}</text>
+  <text x="${centerX}" y="860" text-anchor="middle" class="footer">${lang.footer}</text>
+
+  <!-- Timestamp -->
+  <text x="${centerX}" y="885" text-anchor="middle" class="timestamp">${timestamp}</text>
 
   <!-- Brand watermark -->
   <text x="${centerX}" y="910" text-anchor="middle" class="brand">TIME MARK · 时光印记</text>
