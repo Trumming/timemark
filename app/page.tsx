@@ -1,8 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { ProgressBar } from '@/components/ProgressBar'
 import { SettingsPanel } from '@/components/SettingsPanel'
+import { SharePanel } from '@/components/SharePanel'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { ProgressConfig } from '@/lib/progress'
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage'
@@ -50,6 +51,9 @@ export default function Home() {
   const [config, setConfig] = useLocalStorage<ProgressConfig>('progress-config', defaultConfig)
   const [darkMode, setDarkMode] = useDarkMode()
   const [locale, setLocale] = useState<Locale>('zh')
+
+  // Ref for the progress card to enable image export
+  const progressCardRef = useRef<HTMLDivElement>(null)
 
   const progressData = useProgress(config, locale)
   const { showMilestone, milestoneMessage, dismissMilestone } = useMilestone(progressData.percentage, locale)
@@ -124,7 +128,7 @@ export default function Home() {
           )}
 
           {/* Progress display */}
-          <div className="progress-card fade-gentle" style={{ animationDelay: '200ms' }}>
+          <div ref={progressCardRef} className="progress-card fade-gentle" style={{ animationDelay: '200ms' }}>
             <div className="text-center space-y-8">
               {/* Progress type and shape switchers */}
               <div className="space-y-6">
@@ -230,8 +234,19 @@ export default function Home() {
             />
           </div>
 
+          {/* Share panel */}
+          <div className="fade-gentle" style={{ animationDelay: '500ms' }}>
+            <SharePanel
+              percentage={progressData.percentage}
+              type={config.type}
+              shape={config.shape}
+              progressCardRef={progressCardRef}
+              locale={locale}
+            />
+          </div>
+
           {/* Footer */}
-          <footer className="text-center py-8 space-y-2 fade-gentle" style={{ animationDelay: '600ms' }}>
+          <footer className="text-center py-8 space-y-2 fade-gentle" style={{ animationDelay: '700ms' }}>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

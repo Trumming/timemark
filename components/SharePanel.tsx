@@ -5,28 +5,54 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { Share2, Copy, Check, Download } from 'lucide-react'
+import { Share2, Copy, Check, Download, Image as ImageIcon } from 'lucide-react'
 import { ProgressShape, ProgressType } from '@/lib/progress'
+import { exportElementAsImage } from '@/lib/utils/exportImage'
 
 interface SharePanelProps {
   percentage: number
   type: ProgressType
   shape: ProgressShape
+  progressCardRef: React.RefObject<HTMLDivElement>
+  locale?: string
 }
 
-export function SharePanel({ percentage, type, shape }: SharePanelProps) {
+export function SharePanel({ percentage, type, shape, progressCardRef, locale = 'zh' }: SharePanelProps) {
   const [copied, setCopied] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
 
-  const shareTexts = {
-    year: `🎯 ${new Date().getFullYear()}年已过 ${percentage}%！\n时光飞逝，珍惜当下！\n`,
-    month: `📅 本月已过 ${percentage}%！\n继续加油！\n`,
-    week: `🗓️ 本周已过 ${percentage}%！\n保持动力！\n`,
-    lifetime: `⏳ 人生已过 ${percentage}%！\n每一刻都珍贵！\n`,
+  // Get localized share texts
+  const getShareText = () => {
+    const currentYear = new Date().getFullYear()
+    const percentageFixed = percentage.toFixed(1)
+
+    const shareTexts: Record<string, Record<string, string>> = {
+      zh: {
+        year: `🎯 ${currentYear}年已过 ${percentageFixed}%！时光温柔流逝，每一刻都值得珍惜。`,
+        month: `📅 本月已过 ${percentageFixed}%！继续优雅前行。`,
+        week: `🗓️ 本周已过 ${percentageFixed}%！保持内心的节奏。`,
+        lifetime: `⏳ 人生旅程已过 ${percentageFixed}%！每一步都是风景。`,
+      },
+      en: {
+        year: `🎯 ${percentageFixed}% of ${currentYear} has passed! Time flows gently, cherish every moment.`,
+        month: `📅 ${percentageFixed}% of this month has passed! Keep moving forward gracefully.`,
+        week: `🗓️ ${percentageFixed}% of this week has passed! Maintain your inner rhythm.`,
+        lifetime: `⏳ ${percentageFixed}% of life's journey has passed! Every step is a scenery.`,
+      },
+      ja: {
+        year: `🎯 ${currentYear}年の${percentageFixed}%が経過しました！時は優しく流れ、瞬瞬を大切に。`,
+        month: `📅 今月の${percentageFixed}%が経過しました！優雅に前進しましょう。`,
+        week: `🗓️ 今週の${percentageFixed}%が経過しました！心のリズムを保ちましょう。`,
+        lifetime: `⏳ 人生の旅の${percentageFixed}%が経過しました！一歩一歩が風景。`,
+      },
+    }
+
+    return (shareTexts[locale]?.[type] || shareTexts.zh[type]) + '\n' + currentUrl
   }
 
-  const shareText = shareTexts[type] + currentUrl
+  const shareText = getShareText()
 
   const copyToClipboard = async () => {
     try {
@@ -48,9 +74,27 @@ export function SharePanel({ percentage, type, shape }: SharePanelProps) {
     window.open(weiboUrl, '_blank')
   }
 
-  const downloadImage = () => {
-    // 在实际应用中，这里可以使用 html2canvas 等库生成图片
-    alert('图片导出功能开发中...\n\n提示：您可以使用截图工具保存当前页面')
+  const downloadImage = async () => {
+    if (!progressCardRef.current) {
+      console.error('Progress card element not found')
+      return
+    }
+
+    setIsDownloading(true)
+    try {
+      const currentYear = new Date().getFullYear()
+      const filename = `${type}-progress-${currentYear}.png`
+
+      await exportElementAsImage(progressCardRef.current, {
+        filename,
+        backgroundColor: '', // Use transparent background
+      })
+    } catch (error) {
+      console.error('Failed to export image:', error)
+      alert('Failed to export image. Please try again.')
+    } finally {
+      setIsDownloading(false)
+    }
   }
 
   const generateEmbedCode = () => {
@@ -129,10 +173,23 @@ export function SharePanel({ percentage, type, shape }: SharePanelProps) {
             variant="outline"
             className="w-full"
             onClick={downloadImage}
+            disabled={isDownloading}
           >
-            <Download className="w-4 h-4 mr-2" />
-            下载进度条图片
+            {isDownloading ? (
+              <>
+                <Download className="w-4 h-4 mr-2 animate-pulse" />
+                生成中...
+              </>
+            ) : (
+              <>
+                <ImageIcon className="w-4 h-4 mr-2" />
+                保存图片
+              </>
+            )}
           </Button>
+          <p className="text-xs text-muted-foreground">
+            保存进度卡片图片用于社交媒体分享
+          </p>
         </div>
 
         {/* 嵌入代码 */}
