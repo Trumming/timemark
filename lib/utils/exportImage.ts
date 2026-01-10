@@ -45,10 +45,31 @@ export async function exportElementAsImage(
     try {
       canvas = await html2canvas(element, {
         backgroundColor,
-        logging: true, // Enable logging for debugging
+        logging: false,
         useCORS: true,
         allowTaint: true,
-        scale: 2, // Use scale option for higher quality
+        scale: 2,
+        onclone: (clonedDoc: Document) => {
+          // Remove elements and classes that cause CSS parsing issues
+          const allElements = clonedDoc.querySelectorAll('*')
+          allElements.forEach(el => {
+            // Remove gradient-dawn class which uses CSS variables
+            el.classList.remove('gradient-dawn')
+
+            // Remove text-transparent class that works with gradients
+            if (el.classList.contains('text-transparent') ||
+                el.classList.contains('bg-clip-text')) {
+              el.classList.remove('text-transparent', 'bg-clip-text')
+            }
+          })
+
+          // Force solid background on glass-gentle elements
+          const glassElements = clonedDoc.querySelectorAll('.glass-gentle')
+          glassElements.forEach((el: any) => {
+            el.style.background = '#ffffff'
+            el.style.backgroundColor = '#ffffff'
+          })
+        },
       } as any)
       console.log('Canvas created successfully:', canvas.width, 'x', canvas.height)
     } catch (err) {
