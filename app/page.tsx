@@ -63,8 +63,8 @@ export default function Home() {
 
       {/* Top Control Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 glass-gentle border-b border-black/5 dark:border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
-          {/* Left side - can add logo or menu later */}
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between" style={{ height: '48px' }}>
+          {/* Left side - placeholder */}
           <div className="w-24" />
 
           {/* Right side - Controls */}
@@ -96,9 +96,9 @@ export default function Home() {
         {/* Staggered fade-in animations */}
         <div className="stagger-children space-y-8 md:space-y-12">
           {/* Header */}
-          <header className="glass-gentle rounded-3xl p-6 md:p-10 text-center">
+          <header className="glass-gentle rounded-3xl p-3 md:p-5 text-center">
             {/* Logo & Title */}
-            <h1 className="text-4xl md:text-6xl gradient-dawn mb-3 display-font">
+            <h1 className="text-4xl md:text-6xl gradient-dawn mb-2 display-font">
               {texts.appName}
             </h1>
             <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">
@@ -166,15 +166,16 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Current year/month label */}
-                <div className="space-y-2">
-                  <h2 className="text-2xl md:text-3xl font-light display-font">
-                    {config.type === 'year'
-                      ? new Date().getFullYear()
-                      : config.type === 'month'
-                      ? new Date().toLocaleDateString(locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja-JP' : 'en-US', { month: 'long', year: 'numeric' })
-                      : texts.progressTypes[config.type]}
-                  </h2>
+                {/* Current date display */}
+                <div>
+                  <p className="text-sm text-muted-foreground font-light">
+                    {new Date().toLocaleDateString(locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja-JP' : 'en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      weekday: 'long'
+                    })}
+                  </p>
                 </div>
               </div>
 
@@ -199,19 +200,19 @@ export default function Home() {
                 {config.showDaysRemaining && (
                   <div className="flex justify-center gap-6 md:gap-12 text-sm">
                     <div className="text-center space-y-1">
-                      <p className="text-2xl md:text-3xl font-light gradient-dawn display-font">
+                      <p className="text-2xl md:text-3xl font-light display-font" style={{ color: config.primaryColor }}>
                         {progressData.daysPassed}
                       </p>
                       <p className="text-muted-foreground">
-                        {texts.daysPassed}
+                        {texts.daysPassed} {texts.day}
                       </p>
                     </div>
                     <div className="text-center space-y-1">
-                      <p className="text-2xl md:text-3xl font-light gradient-dawn display-font">
+                      <p className="text-2xl md:text-3xl font-light display-font" style={{ color: config.primaryColor }}>
                         {progressData.daysRemaining}
                       </p>
                       <p className="text-muted-foreground">
-                        {texts.daysRemaining}
+                        {texts.daysRemaining} {texts.day}
                       </p>
                     </div>
                   </div>
