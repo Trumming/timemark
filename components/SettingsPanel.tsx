@@ -48,7 +48,7 @@ export function SettingsPanel({ config, onConfigChange, locale }: SettingsPanelP
       </Button>
 
       {isOpen && (
-        <Card className="settings-panel mt-4">
+        <Card className="settings-panel mt-2">
           <CardHeader>
             <CardTitle className="display-font">{texts.settings.title}</CardTitle>
             <CardDescription className="text-muted-foreground/80">

@@ -3,8 +3,8 @@
 import { useMemo, useState, useRef } from 'react'
 import { ProgressBar } from '@/components/ProgressBar'
 import { SettingsPanel } from '@/components/SettingsPanel'
-import { SharePanel } from '@/components/SharePanel'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { QuickShare } from '@/components/QuickShare'
 import { ProgressConfig } from '@/lib/progress'
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage'
 import { useDarkMode } from '@/lib/hooks/useDarkMode'
@@ -68,11 +68,26 @@ export default function Home() {
       {/* Top Control Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 glass-gentle border-b border-black/5 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between" style={{ height: '48px' }}>
-          {/* Left side - placeholder */}
-          <div className="w-24" />
+          {/* Left side - Title */}
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl md:text-xl display-font">
+              {texts.appName}
+            </h1>
+          </div>
 
           {/* Right side - Controls */}
           <div className="flex items-center gap-3">
+            <QuickShare
+              percentage={progressData.percentage}
+              type={config.type}
+              shape={config.shape}
+              locale={locale}
+              message={progressData.message}
+              daysPassed={progressData.daysPassed}
+              daysRemaining={progressData.daysRemaining}
+              primaryColor={config.primaryColor}
+              backgroundColor={config.backgroundColor}
+            />
             <LanguageSwitcher
               currentLocale={locale}
               onLocaleChange={setLocale}
@@ -96,20 +111,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 pt-24 pb-12 md:pt-32 md:pb-20">
+      <div className="max-w-6xl mx-auto px-4 pt-12 pb-12 md:pt-16 md:pb-20">
         {/* Staggered fade-in animations */}
         <div className="stagger-children space-y-8 md:space-y-12">
-          {/* Header */}
-          <header className="glass-gentle rounded-3xl p-3 md:p-5 text-center">
-            {/* Logo & Title */}
-            <h1 className="text-4xl md:text-6xl gradient-dawn mb-2 display-font">
-              {texts.appName}
-            </h1>
-            <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">
-              {texts.appTagline}
-            </p>
-          </header>
-
           {/* Milestone notification */}
           {showMilestone && milestoneMessage && (
             <div className="fade-gentle">
@@ -172,7 +176,7 @@ export default function Home() {
 
                 {/* Current date display */}
                 <div>
-                  <p className="text-sm text-muted-foreground font-light">
+                  <p className="text-sm font-medium text-muted-foreground">
                     {new Date().toLocaleDateString(locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja-JP' : 'en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -231,22 +235,6 @@ export default function Home() {
               config={config}
               onConfigChange={setConfig}
               locale={locale}
-            />
-          </div>
-
-          {/* Share panel */}
-          <div className="fade-gentle" style={{ animationDelay: '500ms' }}>
-            <SharePanel
-              percentage={progressData.percentage}
-              type={config.type}
-              shape={config.shape}
-              progressCardRef={progressCardRef}
-              locale={locale}
-              message={progressData.message}
-              daysPassed={progressData.daysPassed}
-              daysRemaining={progressData.daysRemaining}
-              primaryColor={config.primaryColor}
-              backgroundColor={config.backgroundColor}
             />
           </div>
 

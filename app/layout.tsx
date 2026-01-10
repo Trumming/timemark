@@ -5,8 +5,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "年度进度条 | Year Progress Bar",
-  description: "可视化年度进度，珍惜每一刻时光",
+  title: "时间印记",
+  description: "可视化时间进度，珍惜每一刻时光",
 }
 
 export default function RootLayout({

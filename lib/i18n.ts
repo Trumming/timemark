@@ -81,6 +81,12 @@ export interface Translations {
   save: string
   cancel: string
   test: string
+
+  // Quick Share
+  share: string
+  generating: string
+  saveImage: string
+  exportFailed: string
 }
 
 export const translations: Record<Locale, Translations> = {
@@ -155,10 +161,15 @@ export const translations: Record<Locale, Translations> = {
     save: '保存',
     cancel: '取消',
     test: '测试',
+
+    share: '分享',
+    generating: '生成中...',
+    saveImage: '保存图片',
+    exportFailed: '导出图片失败:',
   },
 
   en: {
-    appName: 'Time Gentle',
+    appName: 'Time Mark',
     appTagline: 'Gracefully tracking time\'s flow',
     toggleTheme: 'Toggle Theme',
 
@@ -228,6 +239,11 @@ export const translations: Record<Locale, Translations> = {
     save: 'Save',
     cancel: 'Cancel',
     test: 'Test',
+
+    share: 'Share',
+    generating: 'Generating...',
+    saveImage: 'Save Image',
+    exportFailed: 'Failed to export image:',
   },
 
   ja: {
@@ -301,6 +317,11 @@ export const translations: Record<Locale, Translations> = {
     save: '保存',
     cancel: 'キャンセル',
     test: 'テスト',
+
+    share: '共有',
+    generating: '生成中...',
+    saveImage: '画像を保存',
+    exportFailed: '画像のエクスポートに失敗しました:',
   },
 }
 
