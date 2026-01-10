@@ -256,10 +256,17 @@ export default function Home() {
 
           {/* Footer */}
           <footer className="text-center py-8 space-y-2 fade-gentle" style={{ animationDelay: '700ms' }}>
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+              <a href="https://github.com/Trumming/timemark" target="_blank" rel="noopener noreferrer" title="GitHub" className="hover:text-primary transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.48 2.87 8.28 6.84 9.63.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.1-1.5-1.1-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0112 6.84c.85.004 1.71.12 2.51.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .26.18.57.69.48A10.01 10.01 0 0022 12.26C22 6.58 17.52 2 12 2z" />
+                </svg>
+              </a>
+              <a href="https://x.com/xcm0215" target="_blank" rel="noopener noreferrer" title="X (Twitter)" className="hover:text-primary transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.53 2.477h3.7l-8.13 9.3 9.57 9.746h-7.53l-5.93-6.6-6.78 6.6H1.47l8.7-9.98L.29 2.477h7.68l5.37 5.98 6.29-5.98zm-1.29 16.843h2.05L7.1 4.61H4.92l11.32 14.71z" />
+                </svg>
+              </a>
               <span>{texts.privacyNote}</span>
             </div>
             <p className="text-xs text-muted-foreground/70">
