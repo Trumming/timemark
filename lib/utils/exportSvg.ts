@@ -3,6 +3,7 @@ export interface SvgExportOptions {
   type: string
   shape: string
   primaryColor: string
+  backgroundColor: string
   message: string
   daysPassed: number
   daysRemaining: number
@@ -18,6 +19,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
     percentage,
     type,
     primaryColor,
+    backgroundColor,
     message,
     daysPassed,
     daysRemaining,
@@ -40,16 +42,11 @@ function generateProgressSvg(options: SvgExportOptions): string {
   }
   const lang = labels[locale as keyof typeof labels] || labels.zh
 
-  // Dawn-inspired gradient colors
-  const gradientStart = primaryColor || '#a7c7a0'
-  const gradientMid = '#f4c5b0'
-  const gradientEnd = '#e8d5f0'
-
-  // Calculate circular progress
-  const radius = 170
+  // Calculate circular progress - larger radius for bigger ring
+  const radius = 220
   const circumference = 2 * Math.PI * radius
   const progressOffset = circumference - (percentage / 100) * circumference
-  const startAngle = -90 // Start from top
+  const startAngle = -90 // Start from top (12 o'clock position)
 
   // Get current timestamp for sharing
   const now = new Date()
@@ -90,39 +87,13 @@ function generateProgressSvg(options: SvgExportOptions): string {
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.03 0"/>
     </filter>
 
-    <!-- Glow effect for progress ring and percentage -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
+
 
     <!-- Font definitions -->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&amp;family=Cormorant+Garamond:wght@400;500;600;700&amp;family=Outfit:wght@300;400;500;600&amp;display=swap');
 
       .bg-rect { fill: url(#bgGradient); }
-
-      .decorative-circle-1 {
-        fill: none;
-        stroke: ${gradientStart};
-        stroke-width: 1;
-        opacity: 0.2;
-      }
-
-      .decorative-circle-2 {
-        fill: none;
-        stroke: ${gradientMid};
-        stroke-width: 0.5;
-        opacity: 0.15;
-      }
-
-      .decorative-circle-3 {
-        fill: ${gradientEnd};
-        opacity: 0.08;
-      }
 
       .glass-card {
         fill: rgba(255, 255, 255, 0.8);
@@ -150,8 +121,8 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .percentage {
         font-family: 'Outfit', sans-serif;
-        font-size: 80px;
-        font-weight: 500;
+        font-size: 90px;
+        font-weight: 600;
         fill: ${primaryColor};
         filter: url(#glow);
       }
@@ -175,14 +146,14 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .number {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 52px;
+        font-size: 48px;
         font-weight: 600;
         fill: ${primaryColor};
       }
 
       .footer {
         font-family: 'Noto Serif SC', serif;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 400;
         fill: #a8a8a8;
         letter-spacing: 0.12em;
@@ -231,74 +202,62 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <!-- Noise texture overlay -->
   <rect width="100%" height="100%" filter="url(#noise)" opacity="0.35"/>
 
-  <!-- Decorative floating circles -->
-  <circle cx="100" cy="160" r="90" class="decorative-circle-1"/>
-  <circle cx="980" cy="920" r="110" class="decorative-circle-1"/>
-  <circle cx="920" cy="180" r="65" class="decorative-circle-2"/>
-  <circle cx="160" cy="900" r="85" class="decorative-circle-2"/>
-  <circle cx="90" cy="540" r="35" class="decorative-circle-3"/>
-  <circle cx="990" cy="540" r="45" class="decorative-circle-3"/>
-
   <!-- Glass card in center -->
   <rect x="120" y="120" width="840" height="840" rx="28" class="glass-card" filter="url(#shadow)"/>
 
   <!-- Inner decorative lines -->
-  <line x1="155" y1="155" x2="245" y2="155" stroke="${gradientStart}" stroke-width="1" opacity="0.25"/>
-  <line x1="155" y1="155" x2="155" y2="245" stroke="${gradientStart}" stroke-width="1" opacity="0.25"/>
-  <line x1="925" y1="925" x2="835" y2="925" stroke="${gradientEnd}" stroke-width="1" opacity="0.25"/>
-  <line x1="925" y1="925" x2="925" y2="835" stroke="${gradientEnd}" stroke-width="1" opacity="0.25"/>
+  <line x1="155" y1="155" x2="245" y2="155" stroke="${primaryColor}" stroke-width="1" opacity="0.25"/>
+  <line x1="155" y1="155" x2="155" y2="245" stroke="${primaryColor}" stroke-width="1" opacity="0.25"/>
+  <line x1="925" y1="925" x2="835" y2="925" stroke="${primaryColor}" stroke-width="1" opacity="0.25"/>
+  <line x1="925" y1="925" x2="925" y2="835" stroke="${primaryColor}" stroke-width="1" opacity="0.25"/>
 
   <!-- Title section - moved up for better breathing room -->
   <text x="${centerX}" y="215" text-anchor="middle" class="title">时光印记</text>
   <text x="${centerX}" y="250" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · 年度进度' : type}</text>
 
-  <!-- Progress ring - thicker, with user's color, and smaller percentage -->
-  <g transform="translate(${centerX}, 510)">
-    <!-- Background ring -->
+  <!-- Progress ring - much larger and thicker, shows actual progress -->
+  <g transform="translate(${centerX}, 520)">
+    <!-- Background ring - uses user's background color -->
     <circle cx="0" cy="0" r="${radius}" class="progress-ring-bg"/>
-    <!-- Progress ring -->
+    <!-- Progress ring - shows actual progress with user's primary color -->
     <circle cx="0" cy="0" r="${radius}" class="progress-ring"/>
-
-    <!-- Decorative inner circles -->
-    <circle cx="0" cy="0" r="${radius - 30}" fill="none" stroke="${gradientStart}" stroke-width="0.5" opacity="0.12"/>
-    <circle cx="0" cy="0" r="${radius - 55}" fill="none" stroke="${gradientMid}" stroke-width="0.5" opacity="0.08"/>
   </g>
 
-  <!-- Percentage in center - smaller size to avoid overlap -->
-  <text x="${centerX}" y="535" text-anchor="middle" class="percentage">${percentageText}</text>
+  <!-- Percentage in center - larger to fill the bigger ring -->
+  <text x="${centerX}" y="555" text-anchor="middle" class="percentage">${percentageText}</text>
 
   <!-- Message - improved spacing -->
-  <text x="${centerX}" y="640" text-anchor="middle" class="message">${message}</text>
+  <text x="${centerX}" y="670" text-anchor="middle" class="message">${message}</text>
 
   <!-- Day counters - repositioned for better balance -->
   <g transform="translate(${centerX - 200}, 720)">
     <text x="0" y="0" text-anchor="middle" class="label">${lang.passed}</text>
-    <text x="0" y="48" text-anchor="middle" class="number">${daysPassed}</text>
-    <text x="0" y="78" text-anchor="middle" class="label">${lang.day}</text>
+    <text x="0" y="42" text-anchor="middle" class="number">${daysPassed}</text>
+    <text x="0" y="68" text-anchor="middle" class="label">${lang.day}</text>
   </g>
 
   <g transform="translate(${centerX + 200}, 720)">
     <text x="0" y="0" text-anchor="middle" class="label">${lang.remaining}</text>
-    <text x="0" y="48" text-anchor="middle" class="number">${daysRemaining}</text>
-    <text x="0" y="78" text-anchor="middle" class="label">${lang.day}</text>
+    <text x="0" y="42" text-anchor="middle" class="number">${daysRemaining}</text>
+    <text x="0" y="68" text-anchor="middle" class="label">${lang.day}</text>
   </g>
 
   <!-- Decorative divider - adjusted position -->
-  <line x1="${centerX - 80}" y1="820" x2="${centerX + 80}" y2="820"
-        stroke="${gradientStart}" stroke-width="1" opacity="0.25" stroke-linecap="round"/>
+  <line x1="${centerX - 80}" y1="810" x2="${centerX + 80}" y2="810"
+        stroke="${primaryColor}" stroke-width="1" opacity="0.25" stroke-linecap="round"/>
 
   <!-- Footer - adjusted for better spacing -->
-  <text x="${centerX}" y="860" text-anchor="middle" class="footer">${lang.footer}</text>
+  <text x="${centerX}" y="850" text-anchor="middle" class="footer">${lang.footer}</text>
 
   <!-- Timestamp -->
-  <text x="${centerX}" y="885" text-anchor="middle" class="timestamp">${timestamp}</text>
+  <text x="${centerX}" y="875" text-anchor="middle" class="timestamp">${timestamp}</text>
 
   <!-- Brand watermark -->
-  <text x="${centerX}" y="910" text-anchor="middle" class="brand">TIME MARK · 时光印记</text>
+  <text x="${centerX}" y="900" text-anchor="middle" class="brand">TIME MARK · 时光印记</text>
 
   <!-- Corner accents -->
-  <path d="M 140 140 L 175 140 L 140 175 Z" fill="${gradientStart}" opacity="0.12"/>
-  <path d="M 940 940 L 905 940 L 940 905 Z" fill="${gradientEnd}" opacity="0.12"/>
+  <path d="M 140 140 L 175 140 L 140 175 Z" fill="${primaryColor}" opacity="0.12"/>
+  <path d="M 940 940 L 905 940 L 940 905 Z" fill="${primaryColor}" opacity="0.12"/>
 </svg>`
 }
 

@@ -19,6 +19,7 @@ interface SharePanelProps {
   daysPassed?: number
   daysRemaining?: number
   primaryColor?: string
+  backgroundColor?: string
 }
 
 export function SharePanel({
@@ -30,7 +31,8 @@ export function SharePanel({
   message = '',
   daysPassed = 0,
   daysRemaining = 0,
-  primaryColor = '#a7c7a0'
+  primaryColor = '#a7c7a0',
+  backgroundColor = '#f5f5f0'
 }: SharePanelProps) {
   const [copied, setCopied] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -101,6 +103,7 @@ export function SharePanel({
         type,
         shape,
         primaryColor,
+        backgroundColor,
         message,
         daysPassed,
         daysRemaining,

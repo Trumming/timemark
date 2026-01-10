@@ -246,6 +246,7 @@ export default function Home() {
               daysPassed={progressData.daysPassed}
               daysRemaining={progressData.daysRemaining}
               primaryColor={config.primaryColor}
+              backgroundColor={config.backgroundColor}
             />
           </div>
 
