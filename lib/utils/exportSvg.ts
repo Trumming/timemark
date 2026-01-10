@@ -36,9 +36,42 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
   // Get localized labels
   const labels = {
-    zh: { passed: '已过', remaining: '剩余', day: '天', footer: '时光温柔流逝，每一刻都值得珍惜' },
-    en: { passed: 'Passed', remaining: 'Remaining', day: 'days', footer: 'Time flows gently, cherish every moment' },
-    ja: { passed: '経過', remaining: '残り', day: '日', footer: '時は優しく流れ、瞬瞬を大切に' },
+    zh: {
+      title: '时光印记',
+      passed: '已过',
+      remaining: '剩余',
+      day: '天',
+      footer: '时光温柔流逝，每一刻都值得珍惜',
+      brand: 'TIME MARK · 时光印记',
+      year: '年度进度',
+      month: '月度进度',
+      week: '周进度',
+      lifetime: '人生进度'
+    },
+    en: {
+      title: 'Time Mark',
+      passed: 'Passed',
+      remaining: 'Remaining',
+      day: 'days',
+      footer: 'Time flows gently, cherish every moment',
+      brand: 'TIME MARK',
+      year: 'Yearly Progress',
+      month: 'Monthly Progress',
+      week: 'Weekly Progress',
+      lifetime: 'Lifetime Progress'
+    },
+    ja: {
+      title: '時間の刻み',
+      passed: '経過',
+      remaining: '残り',
+      day: '日',
+      footer: '時は優しく流れ、瞬瞬を大切に',
+      brand: 'TIME MARK · 時間の刻み',
+      year: '年間進捗',
+      month: '月次進捗',
+      week: '週間進捗',
+      lifetime: '人生の進捗'
+    },
   }
   const lang = labels[locale as keyof typeof labels] || labels.zh
 
@@ -111,7 +144,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .title {
         font-family: 'Noto Serif SC', serif;
-        font-size: 44px;
+        font-size: 42px;
         font-weight: 700;
         fill: #2c2c2c;
         letter-spacing: 0.18em;
@@ -119,7 +152,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .subtitle {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 20px;
+        font-size: 25px;
         font-weight: 400;
         fill: #8c8c8c;
         letter-spacing: 0.08em;
@@ -159,7 +192,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .footer {
         font-family: 'Noto Serif SC', serif;
-        font-size: 11px;
+        font-size: 15px;
         font-weight: 400;
         fill: #a8a8a8;
         letter-spacing: 0.12em;
@@ -175,7 +208,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
 
       .timestamp {
         font-family: 'Outfit', sans-serif;
-        font-size: 10px;
+        font-size: 14px;
         font-weight: 400;
         fill: #c8c8c8;
         letter-spacing: 0.08em;
@@ -213,8 +246,8 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <line x1="925" y1="925" x2="925" y2="835" stroke="${primaryColor}" stroke-width="1" opacity="0.25"/>
 
   <!-- Title section - moved up for better breathing room -->
-  <text x="${centerX}" y="215" text-anchor="middle" class="title">时光印记</text>
-  <text x="${centerX}" y="250" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · 年度进度' : type}</text>
+  <text x="${centerX}" y="215" text-anchor="middle" class="title">${lang.title}</text>
+  <text x="${centerX}" y="260" text-anchor="middle" class="subtitle">${type === 'year' ? new Date().getFullYear() + ' · ' + lang.year : lang[type as keyof typeof lang] || type}</text>
 
   <!-- Progress ring - much larger and thicker, shows actual progress -->
   <g transform="translate(${centerX}, 520) rotate(-90) scale(1, -1)">
@@ -230,20 +263,20 @@ function generateProgressSvg(options: SvgExportOptions): string {
       stroke-dashoffset="${progressOffset}"/>
   </g>
 
-  <!-- Percentage in center - larger to fill the bigger ring -->
-  <text x="${centerX}" y="555" text-anchor="middle" class="percentage">${percentageText}</text>
+  <!-- Percentage in center - adjusted to be more centered -->
+  <text x="${centerX}" y="500" text-anchor="middle" class="percentage">${percentageText}</text>
 
   <!-- Message - improved spacing -->
-  <text x="${centerX}" y="670" text-anchor="middle" class="message">${message}</text>
+  <text x="${centerX}" y="560" text-anchor="middle" class="message">${message}</text>
 
   <!-- Day counters - repositioned for better balance -->
-  <g transform="translate(${centerX - 200}, 720)">
+  <g transform="translate(${centerX - 70}, 620)">
     <text x="0" y="0" text-anchor="middle" class="label">${lang.passed}</text>
     <text x="0" y="42" text-anchor="middle" class="number">${daysPassed}</text>
     <text x="0" y="68" text-anchor="middle" class="label">${lang.day}</text>
   </g>
 
-  <g transform="translate(${centerX + 200}, 720)">
+  <g transform="translate(${centerX + 70}, 620)">
     <text x="0" y="0" text-anchor="middle" class="label">${lang.remaining}</text>
     <text x="0" y="42" text-anchor="middle" class="number">${daysRemaining}</text>
     <text x="0" y="68" text-anchor="middle" class="label">${lang.day}</text>
@@ -260,7 +293,7 @@ function generateProgressSvg(options: SvgExportOptions): string {
   <text x="${centerX}" y="875" text-anchor="middle" class="timestamp">${timestamp}</text>
 
   <!-- Brand watermark -->
-  <text x="${centerX}" y="900" text-anchor="middle" class="brand">TIME MARK · 时光印记</text>
+  <text x="${centerX}" y="900" text-anchor="middle" class="brand">${lang.brand}</text>
 
   <!-- Corner accents -->
   <path d="M 140 140 L 175 140 L 140 175 Z" fill="${primaryColor}" opacity="0.12"/>
