@@ -75,10 +75,21 @@ export function SharePanel({ percentage, type, shape, progressCardRef, locale = 
   }
 
   const downloadImage = async () => {
+    console.log('downloadImage called')
+    console.log('progressCardRef:', progressCardRef)
+    console.log('progressCardRef.current:', progressCardRef.current)
+
     if (!progressCardRef.current) {
       console.error('Progress card element not found')
+      alert('无法找到进度卡片元素')
       return
     }
+
+    console.log('Element found, offset dimensions:', {
+      width: progressCardRef.current.offsetWidth,
+      height: progressCardRef.current.offsetHeight,
+      className: progressCardRef.current.className
+    })
 
     setIsDownloading(true)
     try {
@@ -91,7 +102,8 @@ export function SharePanel({ percentage, type, shape, progressCardRef, locale = 
       })
     } catch (error) {
       console.error('Failed to export image:', error)
-      alert('Failed to export image. Please try again.')
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      alert(`导出图片失败: ${errorMsg}`)
     } finally {
       setIsDownloading(false)
     }

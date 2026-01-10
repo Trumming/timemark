@@ -38,22 +38,33 @@ export async function exportElementAsImage(
 
   try {
     console.log('Starting image export for:', element)
+    console.log('Element dimensions:', element.offsetWidth, 'x', element.offsetHeight)
 
     // Create a canvas from the element
-    const canvas = await html2canvas(element, {
-      backgroundColor,
-      logging: true, // Enable logging for debugging
-      useCORS: true,
-      allowTaint: true,
-      scale: 2, // Use scale option for higher quality
-    } as any)
-
-    console.log('Canvas created:', canvas.width, 'x', canvas.height)
+    let canvas: HTMLCanvasElement
+    try {
+      canvas = await html2canvas(element, {
+        backgroundColor,
+        logging: true, // Enable logging for debugging
+        useCORS: true,
+        allowTaint: true,
+        scale: 2, // Use scale option for higher quality
+      } as any)
+      console.log('Canvas created successfully:', canvas.width, 'x', canvas.height)
+    } catch (err) {
+      console.error('html2canvas failed:', err)
+      throw new Error(`html2canvas failed: ${err}`)
+    }
 
     // Convert canvas to blob
-    const blob = await canvasToBlob(canvas, 'image/png')
-
-    console.log('Blob created:', blob.size, 'bytes')
+    let blob: Blob
+    try {
+      blob = await canvasToBlob(canvas, 'image/png')
+      console.log('Blob created successfully:', blob.size, 'bytes')
+    } catch (err) {
+      console.error('canvasToBlob failed:', err)
+      throw new Error(`canvasToBlob failed: ${err}`)
+    }
 
     // Create download link
     const url = URL.createObjectURL(blob)
@@ -69,9 +80,13 @@ export async function exportElementAsImage(
       URL.revokeObjectURL(url)
     }, 100)
 
-    console.log('Image export completed')
+    console.log('Image export completed successfully')
   } catch (error) {
-    console.error('Failed to export image:', error)
+    console.error('Failed to export image. Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      error
+    })
     throw error
   }
 }
