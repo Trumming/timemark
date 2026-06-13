@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useMemo } from 'react'
+import { memo, useMemo, ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -8,112 +8,101 @@ interface ArcProgressProps {
   percentage: number
   primaryColor: string
   backgroundColor: string
-  showPercentage: boolean
   size?: number
   strokeWidth?: number
+  children?: ReactNode
   className?: string
 }
 
+/**
+ * Minimal gauge arc (240°). Center content (the hero number) passed as children.
+ */
 export const ArcProgress = memo(function ArcProgress({
   percentage,
   primaryColor,
   backgroundColor,
-  showPercentage,
-  size = 300,
-  strokeWidth = 20,
-  className
+  size = 260,
+  strokeWidth = 3,
+  children,
+  className,
 }: ArcProgressProps) {
-  const arcData = useMemo(() => {
+  const { arcLength, offset, bgArcPath } = useMemo(() => {
     const radius = (size - strokeWidth) / 2
     const circumference = 2 * Math.PI * radius
-    // 弧形只显示 240 度（即 2/3 圆）
-    const arcLength = (circumference * 240) / 360
-    const offset = arcLength - (percentage / 100) * arcLength
+    const len = (circumference * 240) / 360
+    const startAngle = 150
+    const endAngle = 390
 
-    // 计算弧形的起始和结束角度
-    const startAngle = 150 // 从左下方开始
-    const endAngle = 390 // 到右下方结束
-
-    // 将角度转换为坐标
-    const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-      const angleInRadians = (angleInDegrees - 180) * Math.PI / 180.0
+    const polarToCartesian = (
+      centerX: number,
+      centerY: number,
+      r: number,
+      angleInDegrees: number
+    ) => {
+      const angleInRadians = ((angleInDegrees - 180) * Math.PI) / 180.0
       return {
-        x: centerX + radius * Math.cos(angleInRadians),
-        y: centerY + radius * Math.sin(angleInRadians)
+        x: centerX + r * Math.cos(angleInRadians),
+        y: centerY + r * Math.sin(angleInRadians),
       }
     }
 
-    // 创建 SVG 路径
-    const describeArc = (x: number, y: number, radius: number, startAngle: number, endAngle: number) => {
-      const start = polarToCartesian(x, y, radius, endAngle)
-      const end = polarToCartesian(x, y, radius, startAngle)
-      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
-
-      return [
-        "M",
-        start.x,
-        start.y,
-        "A",
-        radius,
-        radius,
-        0,
-        largeArcFlag,
-        0,
-        end.x,
-        end.y
-      ].join(" ")
+    const describeArc = (
+      x: number,
+      y: number,
+      r: number,
+      a0: number,
+      a1: number
+    ) => {
+      const start = polarToCartesian(x, y, r, a1)
+      const end = polarToCartesian(x, y, r, a0)
+      const largeArcFlag = a1 - a0 <= 180 ? '0' : '1'
+      return ['M', start.x, start.y, 'A', r, r, 0, largeArcFlag, 0, end.x, end.y].join(
+        ' '
+      )
     }
 
-    const bgArcPath = describeArc(size / 2, size / 2, radius, startAngle, endAngle)
-
-    return { arcLength, offset, bgArcPath }
+    return {
+      arcLength: len,
+      offset: len - (percentage / 100) * len,
+      bgArcPath: describeArc(size / 2, size / 2, radius, startAngle, endAngle),
+    }
   }, [size, strokeWidth, percentage])
 
   return (
-    <div className={cn('relative flex flex-col items-center justify-center mx-auto', className)} style={{ width: size, height: size }}>
-      <svg
-        width={size}
-        height={size}
-        className="overflow-visible"
-      >
-        {/* 背景弧 */}
+    <div
+      className={cn('relative mx-auto', className)}
+      style={{ width: size, height: size }}
+      role="progressbar"
+      aria-valuenow={percentage}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <svg width={size} height={size} className="overflow-visible">
         <path
-          d={arcData.bgArcPath}
+          d={bgArcPath}
           fill="none"
           stroke={backgroundColor}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
-
-        {/* 进度弧 */}
         <motion.path
-          d={arcData.bgArcPath}
+          d={bgArcPath}
           fill="none"
           stroke={primaryColor}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          strokeDasharray={arcData.arcLength}
-          initial={{ strokeDashoffset: arcData.arcLength }}
-          animate={{ strokeDashoffset: arcData.offset }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          strokeDasharray={arcLength}
+          initial={{ strokeDashoffset: arcLength }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
         />
       </svg>
 
-      {/* 中心内容 - 与圆形相同位置 */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ marginTop: size * 0.15 }}>
-        {showPercentage && (
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <div className="text-5xl font-bold" style={{ color: primaryColor }}>
-              {percentage.toFixed(1)}%
-            </div>
-          </motion.div>
-        )}
-      </div>
+      {children && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center pb-6">
+          {children}
+        </div>
+      )}
     </div>
   )
 })

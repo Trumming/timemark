@@ -1,59 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================================
+   时光印记 · TimeMark — "Quiet Instrument" design system
+   Warm paper + ink, a single persimmon accent, editorial hairline grid.
+   ========================================================================= */
+
 @layer base {
   :root {
-    /* Dawn-inspired palette - soft, calming colors */
-    --background: 255 100% 98%; /* Warm cream */
-    --foreground: 220 30% 20%; /* Soft charcoal */
+    /* Light — warm paper & ink */
+    --background: 38 33% 94%;
+    --foreground: 20 18% 11%;
 
-    --card: 255 100% 99%; /* Nearly white */
-    --card-foreground: 220 30% 20%;
+    --card: 36 40% 97%;
+    --card-foreground: 20 18% 11%;
 
-    --primary: 175 45% 65%; /* Soft sage green */
-    --primary-foreground: 180 40% 15%;
+    --primary: 15 64% 46%;            /* persimmon */
+    --primary-foreground: 40 44% 98%;
 
-    --secondary: 340 65% 75%; /* Gentle coral */
-    --secondary-foreground: 340 50% 20%;
+    --secondary: 32 30% 90%;
+    --secondary-foreground: 20 18% 16%;
 
-    --accent: 255 70% 85%; /* Soft lavender */
-    --accent-foreground: 255 40% 25%;
+    --accent: 32 50% 52%;             /* restrained ochre */
+    --accent-foreground: 24 40% 12%;
 
-    --muted: 210 30% 92%;
-    --muted-foreground: 220 20% 45%;
+    --muted: 35 16% 90%;
+    --muted-foreground: 28 9% 40%;
 
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 175 45% 65%;
+    --border: 30 12% 85%;
+    --input: 30 12% 85%;
+    --ring: 15 64% 46%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
+
+    /* Subtle paper grain (very faint) */
+    --grain-opacity: 0.035;
   }
 
   .dark {
-    --background: 220 40% 8%; /* Deep blue-gray */
-    --foreground: 210 30% 92%;
+    /* Dark — warm near-black & cream */
+    --background: 26 18% 7%;
+    --foreground: 40 24% 90%;
 
-    --card: 220 35% 12%;
-    --card-foreground: 210 30% 92%;
+    --card: 28 16% 10%;
+    --card-foreground: 40 24% 90%;
 
-    --primary: 175 50% 55%; /* Muted sage */
-    --primary-foreground: 180 30% 95%;
+    --primary: 16 72% 57%;
+    --primary-foreground: 26 30% 8%;
 
-    --secondary: 340 50% 60%; /* Muted coral */
-    --secondary-foreground: 340 30% 95%;
+    --secondary: 28 11% 17%;
+    --secondary-foreground: 40 18% 88%;
 
-    --accent: 255 50% 65%; /* Soft lavender */
-    --accent-foreground: 255 30% 95%;
+    --accent: 32 48% 60%;
+    --accent-foreground: 26 30% 9%;
 
-    --muted: 220 30% 18%;
-    --muted-foreground: 210 20% 65%;
+    --muted: 28 11% 16%;
+    --muted-foreground: 38 11% 62%;
 
-    --border: 220 25% 20%;
-    --input: 220 25% 20%;
-    --ring: 175 50% 55%;
+    --border: 30 11% 21%;
+    --input: 30 11% 21%;
+    --ring: 16 72% 57%;
+
+    --grain-opacity: 0.05;
   }
 }
 
@@ -64,207 +73,250 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Outfit', -apple-system, system-ui, sans-serif;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Display font for headings */
-  h1, h2, h3, .display-font {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 500;
+  /* Display type — Fraunces for headings & the hero number */
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display), "Songti SC", "STSong", "Noto Serif SC",
+      Georgia, serif;
+    font-weight: 400;
     letter-spacing: -0.02em;
+  }
+
+  /* Tabular figures wherever data is shown */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.22);
+  }
+
+  /* Paper grain overlay — atmospheric, near-invisible */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
 @layer components {
-  /* Gentle glass effect */
-  .glass-gentle {
-    @apply bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10;
+  /* ---- Mono "kicker" label — the editorial section tag ----------------- */
+  .kicker {
+    @apply font-mono uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .kicker-dot::before {
+    content: "§ ";
+    color: hsl(var(--primary));
+  }
+
+  /* ---- Hairline rules -------------------------------------------------- */
+  .hairline {
+    border-color: hsl(var(--border));
+  }
+
+  .rule {
+    height: 1px;
+    width: 100%;
+    background: hsl(var(--foreground) / 0.14);
+    transform-origin: left center;
+  }
+
+  .dark .rule {
+    background: hsl(var(--foreground) / 0.16);
+  }
+
+  .rule-draw {
+    transform: scaleX(0);
+    @apply animate-draw-rule;
+  }
+
+  /* ---- Surface (editorial card) ---------------------------------------- */
+  .surface {
+    @apply rounded-[var(--radius)] border bg-card;
+    border-color: hsl(var(--border));
+  }
+
+  .surface-raised {
     box-shadow:
-      0 4px 24px -1px rgb(0 0 0 / 0.04),
-      0 2px 8px -2px rgb(0 0 0 / 0.02),
-      inset 0 1px 0 0 rgb(255 255 255 / 0.4);
+      0 1px 0 0 hsl(var(--foreground) / 0.03),
+      0 18px 40px -28px hsl(var(--foreground) / 0.28);
   }
 
-  .dark .glass-gentle {
+  /* ---- Segmented control tabs ------------------------------------------ */
+  .seg {
+    @apply inline-flex items-center gap-0.5 rounded-full p-1;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--foreground) / 0.025);
+  }
+
+  .seg-btn {
+    @apply relative rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-300;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .seg-btn:hover {
+    color: hsl(var(--foreground));
+  }
+
+  .seg-btn[aria-pressed="true"],
+  .seg-btn.is-active {
+    color: hsl(var(--foreground));
+    background: hsl(var(--card));
     box-shadow:
-      0 4px 24px -1px rgb(0 0 0 / 0.3),
-      0 2px 8px -2px rgb(0 0 0 / 0.2),
-      inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+      0 1px 0 0 hsl(var(--foreground) / 0.04),
+      0 6px 16px -10px hsl(var(--foreground) / 0.4);
   }
 
-  /* Subtle gradient text */
-  .gradient-dawn {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(
-      135deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--secondary)) 50%,
-      hsl(var(--accent)) 100%
-    );
+  /* ---- Quiet links with an animated underline -------------------------- */
+  .link-quiet {
+    @apply relative inline-block transition-colors duration-300;
+    color: hsl(var(--foreground));
   }
 
-  /* Breathing animation for progress */
-  @keyframes breathe {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.02);
-      opacity: 0.95;
-    }
+  .link-quiet::after {
+    content: "";
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 transition-transform duration-300 ease-out;
+    background: hsl(var(--primary));
   }
 
-  .animate-breathe {
-    animation: breathe 4s ease-in-out infinite;
+  .link-quiet:hover::after {
+    @apply origin-left scale-x-100;
   }
 
-  /* Gentle fade in */
-  @keyframes fade-gentle {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* ---- Ghost icon button ----------------------------------------------- */
+  .icon-btn {
+    @apply inline-flex items-center justify-center rounded-full transition-all duration-300;
+    color: hsl(var(--muted-foreground));
+    border: 1px solid transparent;
   }
 
-  .fade-gentle {
-    animation: fade-gentle 0.6s ease-out forwards;
+  .icon-btn:hover {
+    color: hsl(var(--foreground));
+    background: hsl(var(--foreground) / 0.05);
   }
 
-  /* Staggered children animation */
-  .stagger-children > * {
-    opacity: 0;
-    animation: fade-gentle 0.6s ease-out forwards;
+  .icon-btn:focus-visible {
+    outline: 2px solid hsl(var(--ring) / 0.5);
+    outline-offset: 2px;
   }
 
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 100ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 200ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 300ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 400ms; }
-
-  /* Soft ambient background */
-  .ambient-glow {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(ellipse at 20% 30%, hsl(175 45% 65% / 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 70%, hsl(340 65% 75% / 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, hsl(255 70% 85% / 0.04) 0%, transparent 50%);
+  /* ---- The hero giant number ------------------------------------------- */
+  .hero-figure {
+    font-family: var(--font-display), "Songti SC", "Noto Serif SC", Georgia, serif;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1, "ss01" 1;
+    line-height: 0.82;
+    letter-spacing: -0.055em;
   }
 
-  .dark .ambient-glow {
-    background:
-      radial-gradient(ellipse at 20% 30%, hsl(175 50% 55% / 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 70%, hsl(340 50% 60% / 0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, hsl(255 50% 65% / 0.02) 0%, transparent 50%);
+  /* ---- Instrument track (shared by progress visualizations) ------------ */
+  .track {
+    background: hsl(var(--foreground) / 0.08);
   }
 
-  /* Soft button styles */
-  .btn-soft {
-    @apply px-6 py-2.5 rounded-full font-medium transition-all duration-300;
-    @apply hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
-    @apply disabled:opacity-50 disabled:pointer-events-none;
+  .dark .track {
+    background: hsl(var(--foreground) / 0.1);
   }
 
-  .btn-soft-primary {
-    @apply btn-soft;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-    @apply text-white shadow-md;
-  }
-
-  .btn-soft-secondary {
-    @apply btn-soft;
-    @apply bg-secondary/10 text-secondary-foreground hover:bg-secondary/20;
-  }
-
-  /* Language switcher */
+  /* ---- Language switcher (restyled in place) --------------------------- */
   .lang-switcher {
-    @apply flex items-center gap-1.5 px-3 py-1.5 rounded-full;
-    @apply bg-white/50 dark:bg-black/30 backdrop-blur-sm;
-    @apply border border-black/5 dark:border-white/10;
-    @apply text-sm font-medium text-muted-foreground;
-    @apply hover:bg-black/5 dark:hover:bg-white/5;
-    @apply transition-all duration-200;
+    @apply inline-flex items-center gap-0.5 rounded-full p-1;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--foreground) / 0.025);
   }
 
   .lang-switcher button {
-    @apply px-2 py-0.5 rounded-md;
-    @apply hover:bg-black/5 dark:hover:bg-white/5;
-    @apply transition-all duration-200;
+    @apply rounded-full px-2.5 py-1 text-xs font-medium transition-all duration-200;
+    color: hsl(var(--muted-foreground));
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+
+  .lang-switcher button:hover {
+    color: hsl(var(--foreground));
   }
 
   .lang-switcher button.active {
-    @apply bg-primary/20 text-primary;
-    @apply font-semibold;
+    color: hsl(var(--foreground));
+    background: hsl(var(--card));
+    box-shadow: 0 4px 12px -8px hsl(var(--foreground) / 0.4);
   }
 
-  /* Progress card special styling */
-  .progress-card {
-    @apply glass-gentle rounded-3xl p-8 md:p-12;
-    @apply transition-all duration-500;
-    @apply hover:shadow-2xl;
-  }
-
-  /* Settings panels */
-  .settings-panel {
-    @apply glass-gentle rounded-2xl overflow-hidden;
-    @apply transition-all duration-300;
-  }
-
-  .settings-panel:hover {
-    @apply shadow-lg;
-  }
-
-  /* Input styling */
+  /* ---- Native control restyling --------------------------------------- */
   input[type="date"],
   input[type="color"],
   select {
-    @apply w-full px-4 py-2.5 rounded-xl;
-    @apply bg-white/50 dark:bg-black/30;
-    @apply border border-black/10 dark:border-white/10;
-    @apply text-foreground;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary/30;
-    @apply transition-all duration-200;
+    @apply w-full rounded-[var(--radius)] px-3 py-2.5;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  /* Toggle switch */
-  .toggle-switch {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full;
-    @apply bg-muted transition-colors duration-300;
-    @apply cursor-pointer;
+  input[type="color"] {
+    @apply h-11 cursor-pointer p-1;
   }
 
-  .toggle-switch.active {
-    @apply bg-primary;
-  }
-
-  .toggle-switch::after {
-    content: '';
-    @apply absolute h-5 w-5 rounded-full bg-white shadow-md;
-    @apply transition-transform duration-300;
-    @apply left-0.5;
-  }
-
-  .toggle-switch.active::after {
-    @apply translate-x-5;
+  input:focus-visible,
+  select:focus-visible {
+    outline: none;
+    border-color: hsl(var(--primary) / 0.6);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.16);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Visually hidden but available to screen readers / crawlers */
+  .sr-only-screen {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

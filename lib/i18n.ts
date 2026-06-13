@@ -6,6 +6,10 @@ export interface Translations {
   appTagline: string
   toggleTheme: string
 
+  // Hero
+  heroKicker: string
+  heroHeadline: string
+
   // Progress Types
   progressTypes: {
     year: string
@@ -95,6 +99,9 @@ export const translations: Record<Locale, Translations> = {
     appTagline: '温柔记录时光流转',
     toggleTheme: '切换主题',
 
+    heroKicker: '此刻 · TIMEMARK',
+    heroHeadline: '今年，已经过去了多少？',
+
     progressTypes: {
       year: '年度',
       month: '本月',
@@ -173,6 +180,9 @@ export const translations: Record<Locale, Translations> = {
     appTagline: 'Gracefully tracking time\'s flow',
     toggleTheme: 'Toggle Theme',
 
+    heroKicker: 'Right now · TIMEMARK',
+    heroHeadline: 'How much of this year is already gone?',
+
     progressTypes: {
       year: 'Yearly',
       month: 'Monthly',
@@ -250,6 +260,9 @@ export const translations: Record<Locale, Translations> = {
     appName: '時の流れ',
     appTagline: '時の流れを優しく記録',
     toggleTheme: 'テーマ変更',
+
+    heroKicker: '今この瞬間 · TIMEMARK',
+    heroHeadline: '今年は、どれくらい過ぎた？',
 
     progressTypes: {
       year: '年間',

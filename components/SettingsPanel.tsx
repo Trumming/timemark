@@ -1,9 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
-import { Button } from './ui/button'
-import { Select } from './ui/select'
 import { Switch } from './ui/switch'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
@@ -25,12 +22,12 @@ interface SettingsPanelProps {
 }
 
 const colorPresets = [
-  { name: '🌿 Sage', primary: '#a7c7a0', bg: '#f5f5f0' },
-  { name: '🌸 Coral', primary: '#e8b4b8', bg: '#fef6f6' },
-  { name: '🌊 Aqua', primary: '#a7d1d9', bg: '#f0f7f8' },
-  { name: '🍑 Blush', primary: '#e8c4b8', bg: '#fef8f6' },
-  { name: '💜 Lavender', primary: '#c4b8d9', bg: '#f8f6fc' },
-  { name: '🌾 Wheat', primary: '#d4c4a8', bg: '#fcfaf6' },
+  { name: '柿 Persimmon', primary: '#be5a2e', bg: '#f3efe6' },
+  { name: '墨 Ink', primary: '#23201b', bg: '#f3efe6' },
+  { name: '赭 Ochre', primary: '#b5852f', bg: '#f4f0e5' },
+  { name: '苔 Moss', primary: '#5c6b3a', bg: '#eff0e6' },
+  { name: '青 Indigo', primary: '#324a66', bg: '#ecf0f4' },
+  { name: '绛 Crimson', primary: '#8e2f3d', bg: '#f3ecee' },
 ]
 
 export function SettingsPanel({ config, onConfigChange, locale }: SettingsPanelProps) {
@@ -39,80 +36,101 @@ export function SettingsPanel({ config, onConfigChange, locale }: SettingsPanelP
 
   return (
     <div className="w-full">
-      <Button
-        variant="outline"
+      <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full btn-soft-secondary"
+        className="surface flex w-full items-center justify-between px-5 py-4 text-sm transition-colors hover:bg-foreground/[0.03]"
+        aria-expanded={isOpen}
       >
-        {isOpen ? texts.close : texts.panels.settings}
-      </Button>
+        <span className="flex items-baseline gap-3">
+          <span className="kicker num">§ 04</span>
+          <span className="font-medium">{texts.panels.settings}</span>
+        </span>
+        <span
+          aria-hidden
+          className="font-mono text-lg text-muted-foreground transition-transform duration-300"
+          style={{ transform: isOpen ? 'rotate(45deg)' : 'none' }}
+        >
+          +
+        </span>
+      </button>
 
       {isOpen && (
-        <Card className="settings-panel mt-2">
-          <CardHeader>
-            <CardTitle className="display-font">{texts.settings.title}</CardTitle>
-            <CardDescription className="text-muted-foreground/80">
-              {texts.settings.description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="surface mt-2 p-6 sm:p-8">
+          <div className="space-y-8">
             {/* Color presets */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">{texts.settings.colorTheme}</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {colorPresets.map((preset) => (
-                  <button
-                    key={preset.name}
-                    onClick={() => onConfigChange({
-                      ...config,
-                      primaryColor: preset.primary,
-                      backgroundColor: preset.bg
-                    })}
-                    className="flex items-center gap-2 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
-                  >
-                    <div
-                      className="w-8 h-8 rounded-full shadow-sm"
-                      style={{ backgroundColor: preset.primary }}
-                    />
-                    <span className="text-sm">{preset.name}</span>
-                  </button>
-                ))}
+            <div className="space-y-3">
+              <Label className="kicker">{texts.settings.colorTheme}</Label>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {colorPresets.map((preset) => {
+                  const selected =
+                    config.primaryColor.toLowerCase() === preset.primary &&
+                    config.backgroundColor.toLowerCase() === preset.bg
+                  return (
+                    <button
+                      key={preset.name}
+                      type="button"
+                      onClick={() =>
+                        onConfigChange({
+                          ...config,
+                          primaryColor: preset.primary,
+                          backgroundColor: preset.bg,
+                        })
+                      }
+                      className="surface flex items-center gap-2.5 px-3 py-2.5 text-left text-xs transition-all hover:bg-foreground/[0.03]"
+                      style={selected ? { borderColor: 'hsl(var(--primary) / 0.5)' } : undefined}
+                      aria-pressed={selected}
+                    >
+                      <span
+                        className="h-5 w-5 shrink-0 rounded-full"
+                        style={{ backgroundColor: preset.primary }}
+                      />
+                      <span className="truncate">{preset.name}</span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
+            <div className="rule" />
+
             {/* Custom colors */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{texts.settings.primaryColor}</Label>
+                <Label className="kicker">{texts.settings.primaryColor}</Label>
                 <Input
                   type="color"
                   value={config.primaryColor}
                   onChange={(e) => onConfigChange({ ...config, primaryColor: e.target.value })}
-                  className="h-12 w-full cursor-pointer"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{texts.settings.backgroundColor}</Label>
+                <Label className="kicker">{texts.settings.backgroundColor}</Label>
                 <Input
                   type="color"
                   value={config.backgroundColor}
                   onChange={(e) => onConfigChange({ ...config, backgroundColor: e.target.value })}
-                  className="h-12 w-full cursor-pointer"
                 />
               </div>
             </div>
 
+            <div className="rule" />
+
             {/* Display options */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center justify-between">
-                <Label className="text-sm">{texts.settings.showPercentage}</Label>
+                <Label className="text-sm font-normal text-foreground/80">
+                  {texts.settings.showPercentage}
+                </Label>
                 <Switch
                   checked={config.showPercentage}
                   onCheckedChange={(checked) => onConfigChange({ ...config, showPercentage: checked })}
                 />
               </div>
               <div className="flex items-center justify-between">
-                <Label className="text-sm">{texts.settings.showDaysRemaining}</Label>
+                <Label className="text-sm font-normal text-foreground/80">
+                  {texts.settings.showDaysRemaining}
+                </Label>
                 <Switch
                   checked={config.showDaysRemaining}
                   onCheckedChange={(checked) => onConfigChange({ ...config, showDaysRemaining: checked })}
@@ -120,19 +138,22 @@ export function SettingsPanel({ config, onConfigChange, locale }: SettingsPanelP
               </div>
             </div>
 
-            {/* Birthdate (for lifetime) */}
+            {/* Birthdate (lifetime only) */}
             {config.type === 'lifetime' && (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">{texts.settings.birthdate}</Label>
-                <Input
-                  type="date"
-                  value={config.birthDate || ''}
-                  onChange={(e) => onConfigChange({ ...config, birthDate: e.target.value })}
-                />
-              </div>
+              <>
+                <div className="rule" />
+                <div className="space-y-2">
+                  <Label className="kicker">{texts.settings.birthdate}</Label>
+                  <Input
+                    type="date"
+                    value={config.birthDate || ''}
+                    onChange={(e) => onConfigChange({ ...config, birthDate: e.target.value })}
+                  />
+                </div>
+              </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )
