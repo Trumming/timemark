@@ -1,0 +1,21 @@
+{
+  "name": "时光印记 · TimeMark",
+  "short_name": "时光印记",
+  "description": "极简的时间进度可视化工具 — 年度、月度、周与人生进度。Minimal time-progress visualizer.",
+  "start_url": "/timemark/",
+  "scope": "/timemark/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3efe6",
+  "theme_color": "#be5a2e",
+  "categories": ["utilities", "productivity", "lifestyle"],
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/timemark/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

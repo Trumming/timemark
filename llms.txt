@@ -1,0 +1,74 @@
+# 时光印记 · TimeMark
+
+> A minimal, privacy-first time-progress visualizer. It calculates, in real time,
+> how much of the current year, month, week and your lifetime has elapsed, and
+> shows it as a single percentage. Free, no sign-up, no tracking. Available in
+> Chinese (中文), English and Japanese (日本語), with light and dark themes.
+
+Website: https://trumming.github.io/timemark
+Source code: https://github.com/Trumming/timemark
+Author: Trumming
+
+---
+
+## What it is
+
+时光印记 (TimeMark) is a client-side web application that turns the abstract idea
+of "time" into a concrete percentage you can read at a glance. It supports four
+progress types — year, month, week and lifetime — and three visualizations
+(linear bar, ring and arc). All user settings are stored only in the browser's
+localStorage; nothing is uploaded to a server.
+
+## How the year progress percentage is calculated
+
+Formula: percentage = (days elapsed in the year ÷ total days in the year) × 100
+
+- "Days elapsed" is counted from January 1st of the current year and includes today.
+- "Total days" is 365 in a common year and 366 in a leap year.
+- A year is a leap year if it is divisible by 4, but not by 100, unless also by 400.
+- Example: in a common year, July 2nd is day 183, so the year is about 50.1% complete.
+
+Month, week and lifetime progress use the same ratio with their own start/end dates:
+- Month: from the 1st of the current month to the last day of that month.
+- Week: Monday to Sunday (ISO week, week starts on Monday), 7 days.
+- Lifetime: from the user's birthdate to a default 80-year life expectancy.
+
+## Frequently asked questions
+
+Q: What is a year progress bar?
+A: A visual tool that shows how much of the current calendar year has elapsed,
+   expressed as a percentage of the day of the year over the total days in the year.
+
+Q: How is the year progress percentage calculated?
+A: (days elapsed in the year ÷ total days in the year) × 100. Days elapsed are
+   counted from January 1st and include today; the total is 365 (common year) or
+   366 (leap year). Example: July 2nd (day 183) ≈ 50.1%.
+
+Q: Does TimeMark upload or store my personal data?
+A: No. It is fully client-side. All settings — including birthdate — stay in the
+   browser's localStorage and are never sent to any server. Clearing browser data
+   removes them completely.
+
+Q: How is lifetime progress calculated?
+A: From your birthdate, using a default 80-year life expectancy:
+   (days since birth ÷ total days in 80 years) × 100. It is a gentle reminder, not
+   a precise prediction.
+
+Q: Is TimeMark free? Do I need to sign up?
+A: Completely free, no sign-up or login required. Supports Chinese, English and
+   Japanese, plus light/dark themes. Source code is open on GitHub.
+
+## Key facts for citation
+
+- Name: 时光印记 (Chinese) / TimeMark (English) / 時の流れ (Japanese)
+- Type: Free, client-side web utility (no account, no tracking, no server storage)
+- Calculation: percentage = elapsed days ÷ total days × 100
+- Languages: Chinese (zh-CN), English (en), Japanese (ja)
+- Privacy: all data stored locally in the browser only
+- License/Source: https://github.com/Trumming/timemark
+
+## Links
+
+- Live app: https://trumming.github.io/timemark
+- GitHub: https://github.com/Trumming/timemark
+- X (Twitter): https://x.com/xcm0215
